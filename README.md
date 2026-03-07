@@ -8,6 +8,19 @@ Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactil
 
 ## Install
 
+Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter) and paste this:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"
+```
+
+That's it. The script downloads FlowKeys, installs it to `~/FlowKeys`, and sets up auto-start. No Gatekeeper warnings, no "can't be verified" popups.
+
+After running the command, grant Accessibility permission (see below) and you're done.
+
+<details>
+<summary><strong>Alternative: Manual install</strong> (if you prefer downloading)</summary>
+
 1. Download or clone this folder
 2. Double-click **`install.command`**
    - **macOS may block it** — see "macOS says it can't be verified" below
@@ -15,6 +28,7 @@ Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactil
 4. Done — FlowKeys auto-starts on every login
 
 The installer copies FlowKeys to `~/FlowKeys` and sets up auto-start. You can delete the downloaded folder after installing.
+</details>
 
 ## Accessibility Permission (Required — One-Time Setup)
 
@@ -106,11 +120,23 @@ Check this file if something isn't working.
 - Check `~/Library/Logs/FlowKeys/flowkeys.log` for audio mixer errors
 
 **macOS says "install.command can't be verified" or mentions malware**
+
+*Method 1 — Right-click (try this first):*
 1. Click **Done** (not "Move to Bin")
 2. **Right-click** on `install.command`
-3. Click **Open** from the menu
-4. A new dialog appears — click **Open** again
-- This is normal for files downloaded from the internet. macOS blocks unsigned scripts by default. FlowKeys is open source and safe.
+3. Click **Open** from the context menu
+4. A **new dialog** appears with an **Open** button — click it
+
+*Method 2 — If right-click still doesn't work:*
+1. Click **Done**
+2. Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter)
+3. Paste this command and press Enter:
+   ```bash
+   xattr -dr com.apple.quarantine ~/Downloads/FlowKeys*/
+   ```
+4. Now double-click `install.command` — it will open without warning
+
+This is normal for files downloaded from the internet. macOS blocks unsigned scripts by default. FlowKeys is open source and safe.
 
 **Python or dependency errors**
 1. Make sure Python 3 is installed: `python3 --version`
