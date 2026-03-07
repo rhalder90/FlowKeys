@@ -46,7 +46,7 @@ def init():
         # size=-16: 16-bit signed audio (negative means signed).
         # channels=1: mono output (uses less CPU than stereo).
         # buffer=512: small buffer = lower latency (~12ms at 44100 Hz).
-        pygame.mixer.init(frequency=44100, size=-16, channels=1, buffer=512)
+        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
 
         # Tell pygame how many sounds can play at the same time.
         # 16 channels means up to 16 overlapping key sounds.
@@ -162,7 +162,7 @@ def _attempt_reinit():
         pygame.mixer.quit()
 
         # Reinitialize with the same low-latency settings.
-        pygame.mixer.init(frequency=44100, size=-16, channels=1, buffer=512)
+        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
 
         # Restore the channel count.
         pygame.mixer.set_num_channels(config.NUM_AUDIO_CHANNELS)
