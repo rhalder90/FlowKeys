@@ -68,13 +68,13 @@ python3 main.py --help
 
 ## Uninstall
 
-Double-click **`~/FlowKeys/uninstall.command`** to stop FlowKeys, remove auto-start, and delete installed files.
+Open Terminal and paste:
 
-**If sound is still playing after uninstall**, open Terminal and run:
 ```bash
-pkill -9 -f "FlowKeys"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/uninstall-remote.sh)"
 ```
-This force-kills any remaining FlowKeys process. This should not normally be needed — the uninstaller handles it automatically.
+
+This stops FlowKeys, removes auto-start, and deletes all installed files.
 
 ## Logs
 
