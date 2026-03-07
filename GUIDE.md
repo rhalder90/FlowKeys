@@ -58,12 +58,11 @@ This takes 30 seconds and you only do it once.
 
 2. Click the **+** button (bottom-left)
 
-3. A file picker will open. Navigate to:
-   **Your home folder > FlowKeys > FlowKeys.app**
+3. A file picker will open. Press **Cmd + Shift + G** to open the "Go to folder" bar. Type `/usr/bin/python3` and press **Enter**. Click **Open**.
 
-   > **How to find your home folder:** In the file picker, press `Cmd + Shift + H`. That takes you straight there. You'll see a folder called **FlowKeys**. Open it, select **FlowKeys.app**, and click **Open**.
+   > **Why python3?** FlowKeys runs as a Python script, so macOS needs to grant Accessibility permission to `python3`. If `/usr/bin/python3` doesn't exist, run `which python3` in Terminal to find the correct path.
 
-4. Make sure the toggle next to **FlowKeys** is turned **ON** (blue)
+4. Make sure the toggle next to **python3** is turned **ON** (blue)
 
 ### Step 4. Done
 
@@ -99,7 +98,7 @@ Everything gets cleaned up. No leftover files, no lingering processes.
 ## Need Help?
 
 **No sound when you type?**
-The most common reason is the Accessibility permission from Step 4. Go back and make sure FlowKeys.app is added and toggled ON.
+The most common reason is the Accessibility permission from Step 3. Go back and make sure **python3** is added and toggled ON.
 
 **Still not working?**
 Email **write.rhalder90@gmail.com** — happy to help.

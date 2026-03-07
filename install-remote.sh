@@ -147,10 +147,13 @@ open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibil
 sleep 2
 echo ""
 echo "    1. Click the + button"
-echo "    2. Go to: home folder → FlowKeys → FlowKeys.app"
-echo "       Full path: $INSTALL_DIR/FlowKeys.app"
-echo "    3. Click Open"
-echo "    4. Make sure the toggle is ON (blue)"
+echo "    2. Press Cmd+Shift+G to open the 'Go to folder' bar"
+echo "    3. Type /usr/bin/python3 and press Enter"
+echo "    4. Click Open"
+echo "    5. Make sure the toggle next to python3 is ON (blue)"
+echo ""
+echo "    If /usr/bin/python3 doesn't exist, run: which python3"
+echo "    Then use that path instead."
 echo ""
 
 # --- Done ---

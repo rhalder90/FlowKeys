@@ -717,12 +717,11 @@
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
-        <h4>Navigate to FlowKeys.app</h4>
-        <p>A file picker will open. You need to find <strong>FlowKeys.app</strong>. Here's how:</p>
+        <h4>Add python3</h4>
+        <p>A file picker will open. You need to add the <strong>python3</strong> binary:</p>
         <ul class="sub-steps">
-          <li>Press <span class="code-inline">Cmd + Shift + H</span> — this takes you to your home folder</li>
-          <li>You'll see a folder called <strong>FlowKeys</strong> — open it</li>
-          <li>Inside, you'll see <strong>FlowKeys.app</strong> — select it</li>
+          <li>Press <span class="code-inline">Cmd + Shift + G</span> — this opens a "Go to folder" bar</li>
+          <li>Type <strong>/usr/bin/python3</strong> and press <strong>Enter</strong></li>
           <li>Click <strong>Open</strong></li>
         </ul>
       </div>
@@ -732,12 +731,12 @@
       <div class="step-num">4</div>
       <div class="step-content">
         <h4>Toggle it ON</h4>
-        <p>FlowKeys now appears in the Accessibility list. Make sure the toggle next to it is <strong>ON</strong> (blue). If it's off (gray), click it to turn it on.</p>
+        <p>python3 now appears in the Accessibility list. Make sure the toggle next to it is <strong>ON</strong> (blue). If it's off (gray), click it to turn it on.</p>
       </div>
     </div>
 
     <div class="tip-box">
-      <p><strong>Can't see FlowKeys.app?</strong> It might be hidden. In the file picker, press <span class="code-inline">Cmd + Shift + .</span> (period) to show hidden files. Or type <span class="code-inline">/Users/yourname/FlowKeys</span> in the Go bar (press <span class="code-inline">Cmd + Shift + G</span>).</p>
+      <p><strong>Why python3?</strong> FlowKeys runs as a Python script, so macOS needs to grant Accessibility permission to the <span class="code-inline">python3</span> binary. If <span class="code-inline">/usr/bin/python3</span> doesn't exist, run <span class="code-inline">which python3</span> in Terminal to find the correct path.</p>
     </div>
 
     <div class="divider"></div>
@@ -822,7 +821,7 @@
 
     <div class="faq-item">
       <h4>No sound when I type</h4>
-      <p>This is almost always the Accessibility permission. Go to <strong>System Settings > Privacy & Security > Accessibility</strong> and make sure FlowKeys is listed and toggled <strong>ON</strong>. If it's not there, follow Step 4 again.</p>
+      <p>This is almost always the Accessibility permission. Go to <strong>System Settings > Privacy & Security > Accessibility</strong> and make sure <strong>python3</strong> is listed and toggled <strong>ON</strong>. If it's not there, follow Step 3 again.</p>
     </div>
 
     <div class="divider-thin"></div>

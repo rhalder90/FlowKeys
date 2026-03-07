@@ -36,11 +36,12 @@ FlowKeys needs permission to detect your keypresses. Without this, it won't work
 
 1. The installer opens Accessibility settings automatically
 2. Click the **+** button
-3. Navigate to your **home folder** → **FlowKeys** → select **FlowKeys.app**
-4. Click **Open**
-5. Make sure the toggle next to FlowKeys is **ON**
+3. Press **Cmd + Shift + G** to open the "Go to folder" bar
+4. Type `/usr/bin/python3` and press **Enter**
+5. Click **Open**
+6. Make sure the toggle next to python3 is **ON**
 
-> **Tip:** Your home folder is usually `/Users/yourname`. Look for the FlowKeys folder there, not in Desktop or Downloads.
+> **Tip:** You must add `python3` (not FlowKeys.app) because FlowKeys runs as a Python script. If `/usr/bin/python3` doesn't exist, run `which python3` in Terminal to find the correct path.
 
 ## Keyboard Shortcuts
 
@@ -89,10 +90,10 @@ Check this file if something isn't working.
 ## Troubleshooting
 
 **No sound when I type**
-1. Make sure Accessibility permission is granted (see above)
+1. Make sure Accessibility permission is granted for **python3** (see above)
 2. Check that your Mac volume is not muted
-3. Open Terminal and run `python3 ~/FlowKeys/main.py` — if you see "This process is not trusted!", Accessibility permission is missing
-4. Check the log file at `~/Library/Logs/FlowKeys/flowkeys.log` for errors
+3. Check the log file: `cat ~/Library/Logs/FlowKeys/flowkeys.log` — if you see "No key events received", Accessibility permission is missing
+4. Run `which python3` to find the correct path, then add that to Accessibility
 
 **FlowKeys doesn't start after reboot**
 1. Open Terminal and run:
