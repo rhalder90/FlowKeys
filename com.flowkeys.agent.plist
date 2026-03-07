@@ -12,12 +12,12 @@
     <key>Label</key>
     <string>com.flowkeys.agent</string>
 
-    <!-- The command to run: python3 followed by the path to main.py. -->
+    <!-- Run FlowKeys.app which wraps the Python script. -->
+    <!-- Using the .app bundle means users can add it to Accessibility easily. -->
     <!-- __FLOWKEYS_PATH__ is a placeholder that install.command replaces. -->
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/python3</string>
-        <string>__FLOWKEYS_PATH__/main.py</string>
+        <string>__FLOWKEYS_PATH__/FlowKeys.app/Contents/MacOS/FlowKeys</string>
     </array>
 
     <!-- Start FlowKeys automatically when the user logs in. -->

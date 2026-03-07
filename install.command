@@ -96,18 +96,24 @@ else
     echo "    python3 $SCRIPT_DIR/main.py"
 fi
 
-# === STEP 5: Remind about Accessibility permissions ===
+# === STEP 5: Grant Accessibility permission ===
 echo ""
 echo "  [5/5] Accessibility Permission Required"
 echo ""
 echo "  ⚠ IMPORTANT: FlowKeys needs Accessibility permission to detect keypresses."
 echo ""
+echo "  Opening System Settings now..."
+echo ""
+
+# Open Accessibility settings directly.
+open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+
 echo "  To grant permission:"
-echo "    1. Open System Settings (Apple menu → System Settings)"
-echo "    2. Go to Privacy & Security → Accessibility"
-echo "    3. Click the + button"
-echo "    4. Add 'Terminal' (or your terminal app)"
-echo "    5. Make sure the toggle is ON"
+echo "    1. In the window that just opened, click the + button"
+echo "    2. Navigate to your FlowKeys folder:"
+echo "       $SCRIPT_DIR"
+echo "    3. Select FlowKeys.app and click Open"
+echo "    4. Make sure the toggle next to FlowKeys is ON"
 echo ""
 
 # === DONE ===

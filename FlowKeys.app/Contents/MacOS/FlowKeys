@@ -1,0 +1,15 @@
+#!/bin/bash
+# FlowKeys.app launcher — runs the Python script.
+# This wrapper exists so macOS treats FlowKeys as a proper .app,
+# which can be added to Accessibility permissions.
+
+# Get the directory where this .app bundle lives.
+# The .app is inside the FlowKeys project folder.
+APP_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+
+# Remove stale PID file if it exists (in case of unclean shutdown).
+rm -f "$HOME/.flowkeys.pid"
+
+# Run the FlowKeys Python script.
+# exec replaces this shell process with Python (cleaner).
+exec /usr/bin/python3 "$APP_DIR/main.py"
