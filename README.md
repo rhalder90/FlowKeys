@@ -74,9 +74,18 @@ Check this file if something isn't working.
 ## Troubleshooting
 
 **No sound when I type**
-- Grant Accessibility permission (see above)
-- Check that your volume is not muted
-- Check the log file for errors
+1. Make sure Accessibility permission is granted (see above)
+2. Check that your Mac volume is not muted
+3. Open Terminal and run `python3 ~/FlowKeys/main.py` — if you see "This process is not trusted!", Accessibility permission is missing
+4. Check the log file at `~/Library/Logs/FlowKeys/flowkeys.log` for errors
+
+**FlowKeys doesn't start after reboot**
+1. Open Terminal and run:
+   ```bash
+   launchctl list | grep flowkeys
+   ```
+2. If nothing shows up, double-click `install.command` again to re-register auto-start
+3. If it shows up but FlowKeys isn't working, check `~/Library/Logs/FlowKeys/stderr.log` for errors
 
 **"FlowKeys is already running"**
 - Another instance is active. Double-click `~/FlowKeys/uninstall.command` to stop it, then try again.
@@ -91,8 +100,20 @@ Check this file if something isn't working.
   pkill -9 -f "FlowKeys"
   ```
 
+**Sound is delayed or laggy**
+- Close other audio-heavy apps (video calls, music production software)
+- Check `~/Library/Logs/FlowKeys/flowkeys.log` for audio mixer errors
+
+**Python or dependency errors**
+1. Make sure Python 3 is installed: `python3 --version`
+2. Reinstall dependencies: `pip3 install pynput pygame-ce`
+3. If you recently updated macOS, re-run `install.command`
+
 **Reinstalling / Updating**
-- Just double-click `install.command` again — it replaces the old install cleanly
+- Just double-click `install.command` again — it stops the old version and installs a fresh copy
+
+**Still stuck?**
+- Email **write.rhalder90@gmail.com** with a description of your issue and the contents of `~/Library/Logs/FlowKeys/flowkeys.log`
 
 ## Sound Credits
 
