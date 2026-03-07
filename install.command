@@ -140,6 +140,11 @@ chmod +x "$INSTALL_DIR/uninstall.command"
 # Copy README for reference.
 cp "$SOURCE_DIR/README.md"  "$INSTALL_DIR/" 2>/dev/null
 
+# Remove macOS quarantine flags from all copied files.
+# Without this, macOS Gatekeeper blocks the .app and uninstall.command
+# with "can't be verified" warnings.
+xattr -dr com.apple.quarantine "$INSTALL_DIR" 2>/dev/null
+
 echo "  ✓ Installed to: $INSTALL_DIR"
 
 # === STEP 5: Set up LaunchAgent (auto-start on login) ===

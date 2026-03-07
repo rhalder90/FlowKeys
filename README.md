@@ -10,6 +10,7 @@ Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactil
 
 1. Download or clone this folder
 2. Double-click **`install.command`**
+   - **macOS may block it** — see "macOS says it can't be verified" below
 3. Grant Accessibility permission (see below)
 4. Done — FlowKeys auto-starts on every login
 
@@ -103,6 +104,13 @@ Check this file if something isn't working.
 **Sound is delayed or laggy**
 - Close other audio-heavy apps (video calls, music production software)
 - Check `~/Library/Logs/FlowKeys/flowkeys.log` for audio mixer errors
+
+**macOS says "install.command can't be verified" or mentions malware**
+1. Click **Done** (not "Move to Bin")
+2. **Right-click** on `install.command`
+3. Click **Open** from the menu
+4. A new dialog appears — click **Open** again
+- This is normal for files downloaded from the internet. macOS blocks unsigned scripts by default. FlowKeys is open source and safe.
 
 **Python or dependency errors**
 1. Make sure Python 3 is installed: `python3 --version`
