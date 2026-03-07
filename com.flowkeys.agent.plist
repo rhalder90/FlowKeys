@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    com.flowkeys.agent.plist — macOS LaunchAgent configuration.
+    This file tells macOS to automatically start FlowKeys when you log in.
+    It gets copied to ~/Library/LaunchAgents/ by install.command.
+    The __FLOWKEYS_PATH__ placeholder gets replaced with the real path during install.
+-->
+<plist version="1.0">
+<dict>
+    <!-- A unique identifier for this LaunchAgent. -->
+    <key>Label</key>
+    <string>com.flowkeys.agent</string>
+
+    <!-- The command to run: python3 followed by the path to main.py. -->
+    <!-- __FLOWKEYS_PATH__ is a placeholder that install.command replaces. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__FLOWKEYS_PATH__/main.py</string>
+    </array>
+
+    <!-- Start FlowKeys automatically when the user logs in. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Don't restart FlowKeys if it crashes or is manually stopped. -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- Where to write standard output (print statements). -->
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/FlowKeys/stdout.log</string>
+
+    <!-- Where to write error output (exceptions, tracebacks). -->
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/FlowKeys/stderr.log</string>
+
+    <!-- Set the working directory to the FlowKeys folder. -->
+    <!-- This ensures relative paths in the code work correctly. -->
+    <key>WorkingDirectory</key>
+    <string>__FLOWKEYS_PATH__</string>
+</dict>
+</plist>

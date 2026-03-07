@@ -1,0 +1,23 @@
+# Python bytecode files (generated when Python runs your code)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# macOS system files
+.DS_Store
+
+# Virtual environments (if someone creates one)
+venv/
+.venv/
+env/
+
+# PID file (created at runtime)
+*.pid
+
+# IDE files
+.vscode/
+.idea/
+
+# Log files (generated at runtime, not needed in repo)
+*.log
+.claude/
