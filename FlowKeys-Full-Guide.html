@@ -633,38 +633,44 @@
 
     <div class="divider"></div>
 
-    <div class="section-label">Step 1 of 5</div>
-    <h3>Download FlowKeys</h3>
+    <div class="section-label">Step 1 of 3</div>
+    <h3>Open Terminal</h3>
 
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-content">
-        <h4>Open the FlowKeys page on GitHub</h4>
-        <p>Open your web browser (Safari, Chrome, etc.) and go to:</p>
-        <div class="code-block">github.com/rhalder90/FlowKeys</div>
-        <p>GitHub is a website where developers share their projects. Think of it as an app store for open-source software. You don't need a GitHub account.</p>
+        <h4>Open Terminal</h4>
+        <p>Press <span class="code-inline">Cmd + Space</span> to open Spotlight Search. Type <strong>Terminal</strong> and press <strong>Enter</strong>.</p>
+        <p>A window with a text prompt will appear. This is Terminal — it lets you type commands directly to your Mac. Don't worry, you only need to paste one command.</p>
       </div>
     </div>
 
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Download the ZIP file</h4>
-        <ul class="sub-steps">
-          <li>Look for the green button that says <strong>Code</strong></li>
-          <li>Click it — a dropdown menu appears</li>
-          <li>Click <strong>Download ZIP</strong></li>
-          <li>The file will download to your <strong>Downloads</strong> folder</li>
-        </ul>
-      </div>
+    <div class="divider"></div>
+
+    <div class="section-label">Step 2 of 3</div>
+    <h3>Paste the install command</h3>
+
+    <p>Copy and paste this entire line into Terminal, then press <strong>Enter</strong>:</p>
+
+    <div class="code-block">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"</div>
+
+    <p>That's it. The installer will:</p>
+    <ul class="sub-steps">
+      <li>Check that Python 3 is installed (and tell you how to get it if not)</li>
+      <li>Download FlowKeys from GitHub automatically</li>
+      <li>Install the required software libraries</li>
+      <li>Set up FlowKeys to start automatically on login</li>
+      <li>Open System Settings for the next step</li>
+    </ul>
+
+    <p>The whole process takes about 30 seconds. You'll see progress messages as it works.</p>
+
+    <div class="tip-box">
+      <p><strong>Why Terminal?</strong> This approach bypasses the macOS "can't be verified" warning that blocks downloaded files. It's the same method used by popular Mac tools like Homebrew. One paste, zero headaches.</p>
     </div>
 
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Unzip the file</h4>
-        <p>Go to your Downloads folder and double-click <strong>FlowKeys-main.zip</strong>. macOS will unzip it automatically. You'll see a folder called <strong>FlowKeys-main</strong>.</p>
-      </div>
+    <div class="warning-box">
+      <p><strong>Don't have Python 3?</strong> The installer will detect this and tell you. Download it free from <strong>python.org/downloads</strong>, install it, then run the command again.</p>
     </div>
 
   </div>
@@ -673,84 +679,10 @@
 
 
 <!-- ═══════════════════════════════════════════════════ -->
-<!-- PAGE 5 — STEP 2 + 3                                -->
+<!-- PAGE 5 — STEP 3 (ACCESSIBILITY)                    -->
 <!-- ═══════════════════════════════════════════════════ -->
 <div class="page">
   <div class="pad pad-top">
-
-    <div class="section-label">Step 2 of 5</div>
-    <h3>Check for Python 3</h3>
-
-    <p>FlowKeys is built with Python, a free and popular programming language. Most Macs already have it installed. Let's check.</p>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Open Terminal</h4>
-        <p>Press <span class="code-inline">Cmd + Space</span> to open Spotlight Search. Type <strong>Terminal</strong> and press <strong>Enter</strong>.</p>
-        <p>A window with a text prompt will appear. This is Terminal — it lets you type commands directly to your Mac.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Check if Python 3 is installed</h4>
-        <p>Type this command and press <strong>Enter</strong>:</p>
-        <div class="code-block">python3 --version</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Read the result</h4>
-        <p>If you see something like <span class="code-inline">Python 3.12.0</span> (any version 3.x), you're all set. Move on to Step 3.</p>
-        <p>If you see an error like "command not found", you need to install Python:</p>
-        <ul class="sub-steps">
-          <li>Go to <strong>python.org/downloads</strong> in your browser</li>
-          <li>Click the big yellow <strong>Download Python</strong> button</li>
-          <li>Open the downloaded file and follow the installer</li>
-          <li>When done, close and re-open Terminal, then try the command again</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="section-label">Step 3 of 5</div>
-    <h3>Run the installer</h3>
-
-    <p>This is the easiest part. One double-click and the installer handles everything.</p>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Open the FlowKeys-main folder</h4>
-        <p>Go to your Downloads folder and open the <strong>FlowKeys-main</strong> folder you unzipped earlier.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Double-click install.command</h4>
-        <p>You'll see a file called <strong>install.command</strong>. Double-click it.</p>
-        <p>A Terminal window will open and start running the installer. You'll see progress messages as it works. This takes about 30 seconds.</p>
-      </div>
-    </div>
-
-    <div class="warning-box">
-      <p><strong>macOS might block it.</strong> If you see "install.command can't be opened because it is from an unidentified developer," right-click the file, select <strong>Open</strong>, then click <strong>Open</strong> again in the dialog.</p>
-    </div>
-
-    <div class="tip-box">
-      <p><strong>What the installer does:</strong> It installs two small software libraries (pynput and pygame-ce), copies FlowKeys to your home folder at ~/FlowKeys, and sets it up to start automatically on login. That's it.</p>
-    </div>
-
-  </div>
-  <div class="page-number">5</div>
-</div>
 
 
 <!-- ═══════════════════════════════════════════════════ -->
@@ -759,7 +691,7 @@
 <div class="page">
   <div class="pad pad-top">
 
-    <div class="section-label">Step 4 of 5</div>
+    <div class="section-label">Step 3 of 3</div>
     <h2>Grant Accessibility permission.</h2>
     <p class="lead">This is the most important step. FlowKeys needs your explicit permission to detect keypresses. Without it, no sound will play.</p>
     <p>macOS requires this for your security — no app can monitor your keyboard without your approval. You only need to do this once.</p>
@@ -810,7 +742,7 @@
 
     <div class="divider"></div>
 
-    <div class="section-label">Step 5 of 5</div>
+    <div class="section-label">You're done</div>
     <h2>Start typing.</h2>
 
     <p class="lead">That's it. You're done. Open any app and start typing — you should hear a crisp mechanical click on every keypress.</p>
@@ -866,33 +798,13 @@
     <div class="section-label">Uninstalling</div>
     <h2>Changed your mind?<br>No worries at all.</h2>
 
-    <p>Uninstalling is just as simple as installing.</p>
+    <p>Uninstalling is just as simple as installing. Open Terminal and paste:</p>
 
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Open Finder</h4>
-        <p>Press <span class="code-inline">Cmd + Shift + H</span> to go to your home folder.</p>
-      </div>
-    </div>
+    <div class="code-block">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/uninstall-remote.sh)"</div>
 
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Open the FlowKeys folder</h4>
-        <p>You'll see a folder called <strong>FlowKeys</strong>. Open it.</p>
-      </div>
-    </div>
+    <p>The uninstaller stops all FlowKeys processes, removes auto-start, and deletes the installed files. Clean and complete.</p>
 
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Double-click uninstall.command</h4>
-        <p>The uninstaller stops all FlowKeys processes, removes auto-start, and deletes the installed files. Clean and complete.</p>
-      </div>
-    </div>
-
-    <p class="subtle">Want to reinstall later? Just double-click install.command from your original download again. It's a fresh start every time.</p>
+    <p class="subtle">Want to reinstall later? Just run the install command again. It's a fresh start every time.</p>
 
   </div>
   <div class="page-number">7</div>
@@ -954,7 +866,7 @@
 
     <div class="faq-item">
       <h4>macOS blocks install.command</h4>
-      <p>Right-click the file, select <strong>Open</strong>, then click <strong>Open</strong> again in the security dialog. This is a one-time macOS Gatekeeper check for files downloaded from the internet.</p>
+      <p>Use the one-line Terminal installer instead — it completely bypasses Gatekeeper. See Step 2 of the Setup Guide.</p>
     </div>
 
   </div>

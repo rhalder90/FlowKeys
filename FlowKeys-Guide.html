@@ -317,29 +317,24 @@
 
     <!-- Setup Steps -->
     <div class="section-label">Setup Guide</div>
-    <h2>5 minutes. That's all it takes.</h2>
+    <h2>One command. That's all it takes.</h2>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-text">
-          Go to <strong>github.com/rhalder90/FlowKeys</strong> &rarr; click the green <strong>Code</strong> button &rarr; <strong>Download ZIP</strong>. Unzip the downloaded file.
+          Open <strong>Terminal</strong> (<span class="code-inline">Cmd + Space</span>, type Terminal, press Enter).
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-text">
-          Make sure Python 3 is installed. Open <strong>Terminal</strong> (<span class="code-inline">Cmd + Space</span>, type Terminal) and run <span class="code-inline">python3 --version</span>. If not installed, get it from <strong>python.org/downloads</strong>.
+          Paste this command and press Enter:<br>
+          <span class="code-inline" style="font-size: 8.5px; display: inline-block; margin-top: 4px;">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"</span>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-text">
-          Open the FlowKeys folder and double-click <strong>install.command</strong>. It handles everything automatically.
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
         <div class="step-text">
           <strong>Grant Accessibility permission</strong> (one-time). The installer opens System Settings. Click <strong>+</strong> &rarr; press <span class="code-inline">Cmd + Shift + H</span> &rarr; open <strong>FlowKeys</strong> folder &rarr; select <strong>FlowKeys.app</strong> &rarr; click <strong>Open</strong> &rarr; toggle <strong>ON</strong>.
         </div>
@@ -374,7 +369,8 @@
     <!-- Uninstall -->
     <div class="section-label">Uninstall</div>
     <p style="font-size: 12px; color: #424245; line-height: 1.5; margin-bottom: 0;">
-      Open Finder &rarr; press <span class="code-inline">Cmd + Shift + H</span> &rarr; open <strong>FlowKeys</strong> &rarr; double-click <strong>uninstall.command</strong>. Done.
+      Open Terminal and paste:<br>
+      <span class="code-inline" style="font-size: 8.5px; display: inline-block; margin-top: 4px;">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/uninstall-remote.sh)"</span>
     </p>
 
   </div>

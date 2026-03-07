@@ -34,54 +34,27 @@ Switch between them instantly with a keyboard shortcut. Turn it off when you're 
 
 ## How to Install
 
-You'll download FlowKeys from GitHub. Don't worry if you've never used GitHub before — it's just a website where developers share their projects. You're simply downloading a folder.
+One command. That's it. No downloading ZIP files, no Gatekeeper warnings, no "can't be verified" popups.
 
-### Step 1. Download FlowKeys
+### Step 1. Open Terminal
 
-1. Open this link in your browser:
-   **https://github.com/rhalder90/FlowKeys**
+Press `Cmd + Space`, type **Terminal**, press Enter. A window with a text prompt will appear.
 
-2. Click the green **Code** button
+### Step 2. Paste this command and press Enter
 
-3. Click **Download ZIP**
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"
+```
 
-4. Open your **Downloads** folder and double-click the ZIP file to unzip it. You should see a folder called **FlowKeys-main**
+The installer will download FlowKeys, install dependencies, set up auto-start, and open System Settings for the next step. Takes about 30 seconds.
 
-### Step 2. Install Python (if you don't have it)
-
-FlowKeys is built with Python, a free programming language. Most Macs already have it, but let's make sure.
-
-1. Open **Terminal**
-   (Press `Cmd + Space`, type **Terminal**, press Enter)
-
-2. Type this and press Enter:
-   ```
-   python3 --version
-   ```
-
-3. If you see something like `Python 3.12.0` — you're good. Skip to Step 3.
-
-4. If you see an error, download Python from:
-   **https://www.python.org/downloads/**
-   Run the installer, then try the command above again.
-
-### Step 3. Run the Installer
-
-1. Open the **FlowKeys-main** folder you downloaded
-
-2. Double-click **`install.command`**
-
-3. A Terminal window will open and start installing. Let it do its thing. It takes about 30 seconds.
-
-4. When it's done, it will open **System Settings** automatically. This is for the next step.
-
-### Step 4. Grant Permission (One-Time)
+### Step 3. Grant Permission (One-Time)
 
 FlowKeys needs your permission to hear your keypresses. macOS takes your privacy seriously — no app can do this without your explicit approval.
 
 This takes 30 seconds and you only do it once.
 
-1. In the **System Settings** window that just opened, you should see **Privacy & Security > Accessibility**
+1. The installer opens **System Settings > Privacy & Security > Accessibility** automatically
 
 2. Click the **+** button (bottom-left)
 
@@ -92,7 +65,7 @@ This takes 30 seconds and you only do it once.
 
 4. Make sure the toggle next to **FlowKeys** is turned **ON** (blue)
 
-### Step 5. Done
+### Step 4. Done
 
 That's it. Start typing. You should hear a mechanical click on every keypress.
 
@@ -113,12 +86,11 @@ That's all you need to remember.
 
 ## Uninstalling
 
-Changed your mind? No worries.
+Changed your mind? No worries. Open Terminal and paste:
 
-1. Open **Finder**
-2. Press `Cmd + Shift + H` to go to your home folder
-3. Open the **FlowKeys** folder
-4. Double-click **`uninstall.command`**
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/uninstall-remote.sh)"
+```
 
 Everything gets cleaned up. No leftover files, no lingering processes.
 

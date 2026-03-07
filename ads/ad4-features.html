@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1080px;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px;
+  }
+
+  .label {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.5px;
+    margin-bottom: 56px;
+    line-height: 1.15;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 800px;
+    justify-content: center;
+  }
+
+  .item {
+    width: 240px;
+    background: #f5f5f7;
+    border-radius: 20px;
+    padding: 36px 24px;
+    text-align: center;
+  }
+
+  .item .icon {
+    font-size: 36px;
+    margin-bottom: 14px;
+  }
+
+  .item h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+  }
+
+  .item p {
+    font-size: 14px;
+    color: #86868b;
+    line-height: 1.5;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 48px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+  }
+</style>
+</head>
+<body>
+  <div class="label">Why FlowKeys</div>
+  <h2>Set it up once.<br>Forget it forever.</h2>
+  <div class="grid">
+    <div class="item">
+      <div class="icon">&#9889;</div>
+      <h4>Instant</h4>
+      <p>12ms latency. Sound arrives the moment your finger hits the key.</p>
+    </div>
+    <div class="item">
+      <div class="icon">&#9881;</div>
+      <h4>Automatic</h4>
+      <p>Starts with your Mac. No launching, no dock icon, nothing to think about.</p>
+    </div>
+    <div class="item">
+      <div class="icon">&#10024;</div>
+      <h4>Free</h4>
+      <p>No subscription. No trial. No catch. Free forever.</p>
+    </div>
+    <div class="item">
+      <div class="icon">&#9790;</div>
+      <h4>Two Sounds</h4>
+      <p>Mechanical or soft. Switch with a shortcut. Your mood, your sound.</p>
+    </div>
+    <div class="item">
+      <div class="icon">&#9200;</div>
+      <h4>1 Command Setup</h4>
+      <p>Paste one line in Terminal. Grant one permission. Done.</p>
+    </div>
+    <div class="item">
+      <div class="icon">&#9888;</div>
+      <h4>Lightweight</h4>
+      <p>Minimal CPU. No battery drain. Invisible until you hear it.</p>
+    </div>
+  </div>
+  <div class="brand">FlowKeys</div>
+</body>
+</html>

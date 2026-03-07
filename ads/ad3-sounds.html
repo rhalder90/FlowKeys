@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1080px;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px;
+  }
+
+  .label {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.5px;
+    margin-bottom: 56px;
+    line-height: 1.15;
+  }
+
+  .sounds {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+
+  .sound-card {
+    width: 380px;
+    border-radius: 24px;
+    padding: 48px 36px;
+    text-align: left;
+  }
+
+  .sound-card.mech {
+    background: #1d1d1f;
+    color: #ffffff;
+  }
+
+  .sound-card.soft {
+    background: #f5f5f7;
+    color: #1d1d1f;
+  }
+
+  .sound-card .icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+
+  .sound-card h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .sound-card p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .sound-card.soft p {
+    color: #86868b;
+  }
+
+  .shortcut {
+    font-size: 18px;
+    color: #86868b;
+    margin-bottom: 0;
+  }
+
+  .shortcut span {
+    font-family: "SF Mono", Menlo, Monaco, monospace;
+    font-size: 16px;
+    background: #f5f5f7;
+    padding: 4px 12px;
+    border-radius: 8px;
+    color: #007aff;
+    font-weight: 500;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 48px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+  }
+</style>
+</head>
+<body>
+  <div class="label">Two Sounds</div>
+  <h2>Your mood. Your sound.</h2>
+  <div class="sounds">
+    <div class="sound-card mech">
+      <div class="icon">&#9000;</div>
+      <h3>Mechanical</h3>
+      <p>Classic Cherry MX click. Crisp, sharp, unmistakable. For when you want to feel every keypress.</p>
+    </div>
+    <div class="sound-card soft">
+      <div class="icon">&#9790;</div>
+      <h3>Soft</h3>
+      <p>Quiet tactile tap. Gentle and subtle. For late nights, shared spaces, and calm focus.</p>
+    </div>
+  </div>
+  <p class="shortcut">Switch instantly with <span>Cmd + Ctrl + S</span></p>
+  <div class="brand">FlowKeys</div>
+</body>
+</html>
