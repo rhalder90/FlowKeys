@@ -10,6 +10,23 @@ APP_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 # Remove stale PID file if it exists (in case of unclean shutdown).
 rm -f "$HOME/.flowkeys.pid"
 
+# Find the correct python3 binary.
+# We check the framework path first (official python.org installer),
+# then fall back to whatever python3 is on the PATH.
+if [ -x "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3" ]; then
+    PYTHON="/Library/Frameworks/Python.framework/Versions/3.14/bin/python3"
+elif [ -x "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3" ]; then
+    PYTHON="/Library/Frameworks/Python.framework/Versions/3.13/bin/python3"
+elif [ -x "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3" ]; then
+    PYTHON="/Library/Frameworks/Python.framework/Versions/3.12/bin/python3"
+elif [ -x "/opt/homebrew/bin/python3" ]; then
+    PYTHON="/opt/homebrew/bin/python3"
+elif [ -x "/usr/local/bin/python3" ]; then
+    PYTHON="/usr/local/bin/python3"
+else
+    PYTHON="python3"
+fi
+
 # Run the FlowKeys Python script.
 # exec replaces this shell process with Python (cleaner).
-exec /usr/bin/python3 "$APP_DIR/main.py"
+exec "$PYTHON" "$APP_DIR/main.py"

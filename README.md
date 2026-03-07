@@ -13,17 +13,19 @@ Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactil
 3. Grant Accessibility permission (see below)
 4. Done — FlowKeys auto-starts on every login
 
+The installer copies FlowKeys to `~/FlowKeys` and sets up auto-start. You can delete the downloaded folder after installing.
+
 ## Accessibility Permission (Required — One-Time Setup)
 
 FlowKeys needs permission to detect your keypresses. Without this, it won't work. You only do this once.
 
 1. The installer opens Accessibility settings automatically
 2. Click the **+** button
-3. Navigate to your **FlowKeys folder** and select **FlowKeys.app**
+3. Navigate to your **home folder** → **FlowKeys** → select **FlowKeys.app**
 4. Click **Open**
 5. Make sure the toggle next to FlowKeys is **ON**
 
-> If running manually via Terminal instead of install.command, add **Terminal** to Accessibility instead (Applications → Utilities → Terminal).
+> **Tip:** Your home folder is usually `/Users/yourname`. Look for the FlowKeys folder there, not in Desktop or Downloads.
 
 ## Keyboard Shortcuts
 
@@ -37,7 +39,7 @@ FlowKeys needs permission to detect your keypresses. Without this, it won't work
 If you prefer not to use auto-start:
 
 ```bash
-cd path/to/FlowKeys
+cd ~/FlowKeys
 python3 main.py
 ```
 
@@ -51,7 +53,7 @@ python3 main.py --help
 
 ## Uninstall
 
-Double-click **`uninstall.command`** to stop FlowKeys and remove auto-start. Your files stay intact.
+Double-click **`~/FlowKeys/uninstall.command`** to stop FlowKeys, remove auto-start, and delete installed files.
 
 **If sound is still playing after uninstall**, open Terminal and run:
 ```bash
@@ -77,7 +79,7 @@ Check this file if something isn't working.
 - Check the log file for errors
 
 **"FlowKeys is already running"**
-- Another instance is active. Double-click `uninstall.command` to stop it, then try again.
+- Another instance is active. Double-click `~/FlowKeys/uninstall.command` to stop it, then try again.
 - Or run this in Terminal to force stop:
   ```bash
   pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid
@@ -89,12 +91,8 @@ Check this file if something isn't working.
   pkill -9 -f "FlowKeys"
   ```
 
-**Moved the FlowKeys folder**
-- Double-click `install.command` again to update the auto-start path
-
-**Sound is delayed or laggy**
-- Close other audio-heavy apps
-- Check log for audio mixer errors
+**Reinstalling / Updating**
+- Just double-click `install.command` again — it replaces the old install cleanly
 
 ## Sound Credits
 

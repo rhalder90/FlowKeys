@@ -1,12 +1,28 @@
 #!/bin/bash
 # install.command — Double-click this file to install FlowKeys.
-# It installs Python dependencies, sets up auto-start on login,
-# and reminds you to grant Accessibility permissions.
+#
+# What this does:
+#   1. Checks for Python 3
+#   2. Installs Python dependencies (pynput, pygame-ce)
+#   3. Copies FlowKeys to ~/FlowKeys (a safe, non-protected location)
+#   4. Sets up auto-start on login (LaunchAgent)
+#   5. Opens Accessibility settings with clear instructions
+#
+# WHY ~/FlowKeys?
+#   macOS protects Desktop, Documents, and Downloads folders.
+#   LaunchAgents can't read files from those locations without
+#   Full Disk Access. ~/FlowKeys sits in the home directory root,
+#   which has no such restriction. This makes auto-start "just work".
 
 # === CONFIGURATION ===
-# Get the folder where this script lives (the FlowKeys folder).
-# This works no matter where the user downloaded FlowKeys to.
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Get the folder where this install.command script lives.
+# This is where the user downloaded/cloned FlowKeys.
+SOURCE_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Where FlowKeys will actually live and run from.
+# This is the CANONICAL install location — always the same, always safe.
+INSTALL_DIR="$HOME/FlowKeys"
 
 # The name of the LaunchAgent plist file.
 PLIST_NAME="com.flowkeys.agent.plist"
@@ -17,6 +33,9 @@ LAUNCH_AGENTS_DIR="$HOME/Library/LaunchAgents"
 # Where FlowKeys writes its logs.
 LOG_DIR="$HOME/Library/Logs/FlowKeys"
 
+# The PID file that tracks the running process.
+PID_FILE="$HOME/.flowkeys.pid"
+
 # === PRETTY PRINTING ===
 echo ""
 echo "  ╔══════════════════════════════════════╗"
@@ -25,9 +44,8 @@ echo "  ╚═══════════════════════
 echo ""
 
 # === STEP 1: Check if Python 3 is installed ===
-echo "  [1/5] Checking for Python 3..."
+echo "  [1/6] Checking for Python 3..."
 if ! command -v python3 &> /dev/null; then
-    # python3 command not found — tell the user how to install it.
     echo ""
     echo "  ✗ Python 3 is not installed!"
     echo ""
@@ -37,7 +55,6 @@ if ! command -v python3 &> /dev/null; then
     echo "    3. Run the installer"
     echo "    4. Then double-click install.command again"
     echo ""
-    # Wait for the user to read the message before the terminal closes.
     read -p "  Press Enter to exit..."
     exit 1
 fi
@@ -45,9 +62,7 @@ echo "  ✓ Python 3 found: $(python3 --version)"
 
 # === STEP 2: Install Python dependencies ===
 echo ""
-echo "  [2/5] Installing dependencies (pynput, pygame-ce)..."
-# pip3 install will download and install the packages.
-# --quiet reduces the output noise.
+echo "  [2/6] Installing dependencies (pynput, pygame-ce)..."
 pip3 install pynput pygame-ce --quiet 2>&1
 if [ $? -eq 0 ]; then
     echo "  ✓ Dependencies installed"
@@ -58,49 +73,113 @@ else
     exit 1
 fi
 
-# === STEP 3: Create log directory ===
+# === STEP 3: Stop any existing FlowKeys processes ===
 echo ""
-echo "  [3/5] Setting up log directory..."
-# Create the log directory if it doesn't exist.
-# -p means "create parent directories too" and "don't error if it already exists".
-mkdir -p "$LOG_DIR"
-echo "  ✓ Logs will be written to: $LOG_DIR"
+echo "  [3/6] Stopping any existing FlowKeys processes..."
 
-# === STEP 4: Set up LaunchAgent (auto-start on login) ===
+# Kill using PID file if it exists.
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    kill "$PID" 2>/dev/null
+    rm -f "$PID_FILE"
+fi
+
+# Kill any FlowKeys processes by pattern matching.
+pkill -f "python3.*FlowKeys.*main.py" 2>/dev/null
+pkill -f "FlowKeys/FlowKeys.app" 2>/dev/null
+pkill -f "FlowKeys/main.py" 2>/dev/null
+sleep 1
+
+# Force kill anything still alive.
+pkill -9 -f "python3.*FlowKeys.*main.py" 2>/dev/null
+pkill -9 -f "FlowKeys/FlowKeys.app" 2>/dev/null
+pkill -9 -f "FlowKeys/main.py" 2>/dev/null
+rm -f "$PID_FILE"
+
+# Unload old LaunchAgent if it exists.
+launchctl unload "$LAUNCH_AGENTS_DIR/$PLIST_NAME" 2>/dev/null
+
+echo "  ✓ Clean slate"
+
+# === STEP 4: Copy FlowKeys to ~/FlowKeys ===
 echo ""
-echo "  [4/5] Setting up auto-start on login..."
+echo "  [4/6] Installing FlowKeys to ~/FlowKeys..."
+
+# If ~/FlowKeys already exists, remove it so we get a clean copy.
+# This ensures updates are always applied.
+if [ -d "$INSTALL_DIR" ]; then
+    rm -rf "$INSTALL_DIR"
+fi
+
+# Copy the entire FlowKeys folder to ~/FlowKeys.
+# We copy only the files needed to run — not .git or __pycache__.
+mkdir -p "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR/sounds"
+
+# Copy core Python files.
+cp "$SOURCE_DIR/main.py"         "$INSTALL_DIR/"
+cp "$SOURCE_DIR/config.py"       "$INSTALL_DIR/"
+cp "$SOURCE_DIR/player.py"       "$INSTALL_DIR/"
+cp "$SOURCE_DIR/listener.py"     "$INSTALL_DIR/"
+cp "$SOURCE_DIR/logger_setup.py" "$INSTALL_DIR/"
+
+# Copy sound files.
+cp "$SOURCE_DIR/sounds/"*.wav    "$INSTALL_DIR/sounds/"
+
+# Copy the .app bundle (for Accessibility permission).
+cp -R "$SOURCE_DIR/FlowKeys.app" "$INSTALL_DIR/"
+
+# Make the .app executable.
+chmod +x "$INSTALL_DIR/FlowKeys.app/Contents/MacOS/FlowKeys"
+
+# Copy the plist template and uninstaller.
+cp "$SOURCE_DIR/$PLIST_NAME"        "$INSTALL_DIR/"
+cp "$SOURCE_DIR/uninstall.command"  "$INSTALL_DIR/"
+chmod +x "$INSTALL_DIR/uninstall.command"
+
+# Copy README for reference.
+cp "$SOURCE_DIR/README.md"  "$INSTALL_DIR/" 2>/dev/null
+
+echo "  ✓ Installed to: $INSTALL_DIR"
+
+# === STEP 5: Set up LaunchAgent (auto-start on login) ===
+echo ""
+echo "  [5/6] Setting up auto-start on login..."
 
 # Create the LaunchAgents directory if it doesn't exist.
 mkdir -p "$LAUNCH_AGENTS_DIR"
 
-# Copy the plist template from the FlowKeys folder.
-cp "$SCRIPT_DIR/$PLIST_NAME" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
+# Create the log directory.
+mkdir -p "$LOG_DIR"
 
-# Replace the __FLOWKEYS_PATH__ placeholder with the actual path.
-# sed -i '' means "edit the file in place" on macOS.
-sed -i '' "s|__FLOWKEYS_PATH__|$SCRIPT_DIR|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
+# Copy the plist template to the LaunchAgents directory.
+cp "$INSTALL_DIR/$PLIST_NAME" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
+
+# Replace the __FLOWKEYS_PATH__ placeholder with ~/FlowKeys.
+sed -i '' "s|__FLOWKEYS_PATH__|$INSTALL_DIR|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 
 # Replace the __HOME__ placeholder with the user's home directory.
 sed -i '' "s|__HOME__|$HOME|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 
-# Unload the old LaunchAgent if it exists (ignore errors).
-launchctl unload "$LAUNCH_AGENTS_DIR/$PLIST_NAME" 2>/dev/null
-
-# Load the new LaunchAgent.
+# Load the new LaunchAgent. This also starts FlowKeys immediately.
 launchctl load "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 
 if [ $? -eq 0 ]; then
     echo "  ✓ FlowKeys will auto-start on login"
 else
     echo "  ⚠ Could not set up auto-start. You can run FlowKeys manually:"
-    echo "    python3 $SCRIPT_DIR/main.py"
+    echo "    python3 $INSTALL_DIR/main.py"
 fi
 
-# === STEP 5: Grant Accessibility permission ===
+# === STEP 6: Accessibility Permission ===
 echo ""
-echo "  [5/5] Accessibility Permission Required"
+echo "  [6/6] Accessibility Permission"
 echo ""
-echo "  ⚠ IMPORTANT: FlowKeys needs Accessibility permission to detect keypresses."
+echo "  ┌─────────────────────────────────────────────────────────┐"
+echo "  │  FlowKeys needs permission to detect your keypresses.  │"
+echo "  │  Without this, it won't make any sound.                │"
+echo "  │  You only need to do this ONCE.                        │"
+echo "  └─────────────────────────────────────────────────────────┘"
 echo ""
 echo "  Opening System Settings now..."
 echo ""
@@ -108,26 +187,39 @@ echo ""
 # Open Accessibility settings directly.
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
 
-echo "  To grant permission:"
-echo "    1. In the window that just opened, click the + button"
-echo "    2. Navigate to your FlowKeys folder:"
-echo "       $SCRIPT_DIR"
-echo "    3. Select FlowKeys.app and click Open"
-echo "    4. Make sure the toggle next to FlowKeys is ON"
+# Wait a moment for Settings to open.
+sleep 2
+
+echo "  Follow these steps in the window that just opened:"
+echo ""
+echo "    Step 1. Click the + button (bottom-left)"
+echo ""
+echo "    Step 2. A file picker will open."
+echo "            Go to your home folder, then select:"
+echo ""
+echo "            FlowKeys → FlowKeys.app"
+echo ""
+echo "            Full path: $INSTALL_DIR/FlowKeys.app"
+echo ""
+echo "    Step 3. Click Open"
+echo ""
+echo "    Step 4. Make sure the toggle next to FlowKeys is ON (blue)"
 echo ""
 
 # === DONE ===
-echo "  ╔══════════════════════════════════════╗"
-echo "  ║       Installation Complete!          ║"
-echo "  ╚══════════════════════════════════════╝"
+echo "  ╔══════════════════════════════════════════════╗"
+echo "  ║         Installation Complete!               ║"
+echo "  ╚══════════════════════════════════════════════╝"
 echo ""
-echo "  FlowKeys is now running!"
+echo "  FlowKeys is installed at: ~/FlowKeys"
 echo ""
 echo "  Shortcuts:"
 echo "    Cmd+Ctrl+K  →  Toggle sound on/off"
 echo "    Cmd+Ctrl+S  →  Switch sound (mechanical ↔ soft)"
 echo ""
-echo "  ⚠ WARNING: If you move this folder, run install.command again!"
+echo "  Logs: ~/Library/Logs/FlowKeys/"
+echo ""
+echo "  To uninstall: double-click ~/FlowKeys/uninstall.command"
 echo ""
 
 # Wait so the user can read the output.
