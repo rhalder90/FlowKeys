@@ -1,6 +1,6 @@
 #!/bin/bash
-# uninstall.command — Double-click this file to remove FlowKeys auto-start.
-# This stops FlowKeys and removes the LaunchAgent so it won't start on login.
+# uninstall.command — Double-click this file to completely stop FlowKeys.
+# This kills ALL FlowKeys processes, removes the LaunchAgent, and cleans up.
 # It does NOT delete the FlowKeys folder or your sound files.
 
 # === CONFIGURATION ===
@@ -20,28 +20,36 @@ echo "  ║       FlowKeys Uninstaller           ║"
 echo "  ╚══════════════════════════════════════╝"
 echo ""
 
-# === STEP 1: Stop the running FlowKeys process ===
-echo "  [1/3] Stopping FlowKeys..."
+# === STEP 1: Kill ALL FlowKeys processes ===
+echo "  [1/3] Stopping all FlowKeys processes..."
 
-# Check if the PID file exists and kill the process.
+# Method 1: Kill using the PID file (the normal way).
 if [ -f "$PID_FILE" ]; then
-    # Read the process ID from the file.
     PID=$(cat "$PID_FILE")
-
-    # Try to gracefully stop the process (SIGTERM).
     kill "$PID" 2>/dev/null
-
-    if [ $? -eq 0 ]; then
-        echo "  ✓ Stopped FlowKeys (PID: $PID)"
-    else
-        echo "  ✓ FlowKeys was not running"
-    fi
-
-    # Remove the PID file.
     rm -f "$PID_FILE"
-else
-    echo "  ✓ FlowKeys was not running"
 fi
+
+# Method 2: Kill ANY process running main.py from the FlowKeys folder.
+# This catches nohup processes, background processes, and anything else.
+pkill -f "python3.*FlowKeys.*main.py" 2>/dev/null
+
+# Method 3: Kill any process matching "FlowKeys" (catches the .app too).
+pkill -f "FlowKeys/FlowKeys.app" 2>/dev/null
+pkill -f "FlowKeys/main.py" 2>/dev/null
+
+# Give processes a moment to die gracefully.
+sleep 1
+
+# Method 4: Force kill anything still alive (SIGKILL — cannot be ignored).
+pkill -9 -f "python3.*FlowKeys.*main.py" 2>/dev/null
+pkill -9 -f "FlowKeys/FlowKeys.app" 2>/dev/null
+pkill -9 -f "FlowKeys/main.py" 2>/dev/null
+
+# Clean up the PID file if it still exists.
+rm -f "$PID_FILE"
+
+echo "  ✓ All FlowKeys processes stopped"
 
 # === STEP 2: Remove the LaunchAgent ===
 echo ""
@@ -63,8 +71,13 @@ fi
 echo ""
 echo "  [3/3] Cleanup complete!"
 echo ""
-echo "  FlowKeys has been stopped and auto-start has been removed."
-echo "  Your FlowKeys folder and sound files are still intact."
+echo "  ╔══════════════════════════════════════╗"
+echo "  ║       FlowKeys Fully Stopped         ║"
+echo "  ╚══════════════════════════════════════╝"
+echo ""
+echo "  ✓ All processes killed"
+echo "  ✓ Auto-start removed"
+echo "  ✓ Your FlowKeys folder and sound files are still intact"
 echo ""
 echo "  To reinstall later, just double-click install.command again."
 echo ""

@@ -13,18 +13,17 @@ Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactil
 3. Grant Accessibility permission (see below)
 4. Done — FlowKeys auto-starts on every login
 
-## Accessibility Permission (Required)
+## Accessibility Permission (Required — One-Time Setup)
 
-FlowKeys needs permission to detect your keypresses. Without this, it won't work.
+FlowKeys needs permission to detect your keypresses. Without this, it won't work. You only do this once.
 
-1. Open **System Settings** (Apple menu → System Settings)
-2. Go to **Privacy & Security** → **Accessibility**
-3. Click the **+** button
-4. Navigate to `/Applications/Utilities/` and add **Terminal** (or your terminal app: iTerm2, Warp, etc.)
-5. Make sure the toggle next to it is **ON**
-6. Restart FlowKeys
+1. The installer opens Accessibility settings automatically
+2. Click the **+** button
+3. Navigate to your **FlowKeys folder** and select **FlowKeys.app**
+4. Click **Open**
+5. Make sure the toggle next to FlowKeys is **ON**
 
-> If you run FlowKeys with Python directly, you may need to add Python instead of Terminal.
+> If running manually via Terminal instead of install.command, add **Terminal** to Accessibility instead (Applications → Utilities → Terminal).
 
 ## Keyboard Shortcuts
 
@@ -54,6 +53,12 @@ python3 main.py --help
 
 Double-click **`uninstall.command`** to stop FlowKeys and remove auto-start. Your files stay intact.
 
+**If sound is still playing after uninstall**, open Terminal and run:
+```bash
+pkill -9 -f "FlowKeys"
+```
+This force-kills any remaining FlowKeys process. This should not normally be needed — the uninstaller handles it automatically.
+
 ## Logs
 
 FlowKeys writes logs to:
@@ -72,10 +77,16 @@ Check this file if something isn't working.
 - Check the log file for errors
 
 **"FlowKeys is already running"**
-- Another instance is active. To stop it:
+- Another instance is active. Double-click `uninstall.command` to stop it, then try again.
+- Or run this in Terminal to force stop:
   ```bash
-  cat ~/.flowkeys.pid  # shows the process ID
-  kill $(cat ~/.flowkeys.pid)  # stops it
+  pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid
+  ```
+
+**Sound still playing after uninstall**
+- Run this in Terminal:
+  ```bash
+  pkill -9 -f "FlowKeys"
   ```
 
 **Moved the FlowKeys folder**
