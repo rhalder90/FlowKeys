@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FlowKeys — The Complete Guide</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1d1d1f;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ——— Utility ——— */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  .pad { padding: 48px 52px; }
+  .pad-top { padding-top: 56px; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: #1d1d1f;
+  }
+
+  h3 {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    color: #1d1d1f;
+  }
+
+  p {
+    font-size: 15px;
+    color: #424245;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  p.lead {
+    font-size: 17px;
+    color: #1d1d1f;
+    line-height: 1.55;
+  }
+
+  p.subtle {
+    font-size: 13px;
+    color: #86868b;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e5e5e7;
+    margin: 28px 0;
+  }
+
+  .divider-thin {
+    height: 1px;
+    background: #e5e5e7;
+    margin: 18px 0;
+  }
+
+  .code-inline {
+    font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, monospace;
+    font-size: 12px;
+    background: #f5f5f7;
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: #1d1d1f;
+  }
+
+  .code-block {
+    font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, monospace;
+    font-size: 13px;
+    background: #1d1d1f;
+    color: #f5f5f7;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 10px 0 14px;
+    line-height: 1.5;
+  }
+
+  /* ——— Hero (Page 1) ——— */
+  .hero {
+    background: linear-gradient(180deg, #000000 0%, #111122 50%, #1a1a2e 100%);
+    color: #ffffff;
+    text-align: center;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .hero .tagline {
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.45;
+    max-width: 440px;
+  }
+
+  .hero .version {
+    position: absolute;
+    bottom: 40px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  /* ——— Cost Section (Page 2) ——— */
+  .cost-row {
+    display: flex;
+    gap: 16px;
+    margin: 24px 0;
+    align-items: stretch;
+  }
+
+  .cost-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .cost-card.expensive {
+    background: #f5f5f7;
+  }
+
+  .cost-card.free {
+    background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+    color: #fff;
+  }
+
+  .cost-card .emoji {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .cost-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1d1d1f;
+  }
+
+  .cost-card.free h4 {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .cost-card .price {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .cost-card .price-sub {
+    font-size: 13px;
+    color: #86868b;
+  }
+
+  .cost-card.free .price-sub {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .cost-list {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+  }
+
+  .cost-list li {
+    font-size: 15px;
+    color: #424245;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f2;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cost-list li:last-child { border-bottom: none; }
+  .cost-list .item-name { color: #1d1d1f; font-weight: 500; }
+  .cost-list .item-price { color: #86868b; }
+
+  /* ——— Feature Cards ——— */
+  .feature-grid {
+    display: flex;
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .feature-card {
+    flex: 1;
+    background: #f5f5f7;
+    border-radius: 14px;
+    padding: 24px 20px;
+  }
+
+  .feature-card .icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .feature-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1d1d1f;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: #86868b;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  /* ——— Steps ——— */
+  .step {
+    display: flex;
+    gap: 18px;
+    margin: 22px 0;
+    page-break-inside: avoid;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: #1d1d1f;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1d1d1f;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: #424245;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .sub-steps {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+  }
+
+  .sub-steps li {
+    font-size: 14px;
+    color: #424245;
+    line-height: 1.55;
+    padding: 3px 0 3px 22px;
+    position: relative;
+  }
+
+  .sub-steps li::before {
+    content: "›";
+    position: absolute;
+    left: 6px;
+    color: #007aff;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* ——— Tip / Warning Boxes ——— */
+  .tip-box {
+    background: #f0f5ff;
+    border-left: 4px solid #007aff;
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+
+  .tip-box p {
+    font-size: 13px;
+    color: #1d1d1f;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  .tip-box strong { color: #007aff; }
+
+  .warning-box {
+    background: #fff8f0;
+    border-left: 4px solid #ff9500;
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+
+  .warning-box p {
+    font-size: 13px;
+    color: #1d1d1f;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  .warning-box strong { color: #ff9500; }
+
+  /* ——— Shortcut Table ——— */
+  .shortcut-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e5e5e7;
+    margin: 16px 0;
+  }
+
+  .shortcut-table th {
+    background: #f5f5f7;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #86868b;
+    padding: 12px 18px;
+    text-align: left;
+  }
+
+  .shortcut-table td {
+    font-size: 15px;
+    padding: 14px 18px;
+    border-top: 1px solid #e5e5e7;
+    color: #1d1d1f;
+  }
+
+  .shortcut-table td:first-child {
+    font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: #007aff;
+    white-space: nowrap;
+  }
+
+  /* ——— FAQ ——— */
+  .faq-item {
+    margin: 18px 0;
+  }
+
+  .faq-item h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 6px;
+  }
+
+  .faq-item p {
+    font-size: 14px;
+    color: #424245;
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  /* ——— Full-width Banner ——— */
+  .banner {
+    background: #1d1d1f;
+    color: #ffffff;
+    text-align: center;
+    padding: 36px 52px;
+  }
+
+  .banner h2 {
+    color: #ffffff;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .banner p {
+    color: rgba(255,255,255,0.6);
+    font-size: 15px;
+  }
+
+  /* ——— Page Numbers ——— */
+  .page-number {
+    position: absolute;
+    bottom: 28px;
+    right: 52px;
+    font-size: 11px;
+    color: #c7c7cc;
+    font-weight: 500;
+  }
+
+  /* ——— Footer ——— */
+  .footer-final {
+    background: #f5f5f7;
+    text-align: center;
+    padding: 36px 52px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .footer-final .email {
+    font-size: 20px;
+    font-weight: 600;
+    color: #007aff;
+    margin-bottom: 6px;
+  }
+
+  .footer-final p {
+    font-size: 12px;
+    color: #86868b;
+    line-height: 1.6;
+  }
+
+  .footer-final a {
+    color: #007aff;
+    text-decoration: none;
+  }
+
+  /* ——— Print ——— */
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 1 — HERO                                      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="hero">
+    <div class="hero-label">The Complete Guide</div>
+    <h1>FlowKeys</h1>
+    <p class="tagline">The mechanical keyboard sound you love.<br>On the Mac you already own.</p>
+    <div class="version">v1.0.0 — Free &amp; Open Source</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 2 — THE PROBLEM                               -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">The Problem</div>
+    <h2>Mechanical keyboards are incredible.<br>Their price tags aren't.</h2>
+
+    <p class="lead">There's something deeply satisfying about a mechanical keyboard. The crisp click on every keypress. The tactile feedback under your fingers. It transforms typing from a chore into something you actually enjoy.</p>
+
+    <p>But that experience comes at a cost. A serious one.</p>
+
+    <ul class="cost-list">
+      <li><span class="item-name">Entry-level mechanical keyboard</span><span class="item-price">$60 – $80</span></li>
+      <li><span class="item-name">Mid-range (Cherry MX, hot-swap)</span><span class="item-price">$100 – $180</span></li>
+      <li><span class="item-name">Premium (wireless, RGB, aluminum)</span><span class="item-price">$180 – $300</span></li>
+      <li><span class="item-name">Custom build (enthusiast-grade)</span><span class="item-price">$300 – $800+</span></li>
+    </ul>
+
+    <p>And if you already have a MacBook with a perfectly good keyboard, buying an external one just for the <em>sound</em> feels like a hard sell.</p>
+
+    <p>What if you didn't have to choose?</p>
+
+    <div class="cost-row">
+      <div class="cost-card expensive">
+        <div class="emoji">&#9000;</div>
+        <h4>Mechanical Keyboard</h4>
+        <div class="price">$80 – $300+</div>
+        <div class="price-sub">Plus desk space. Plus cable clutter.</div>
+      </div>
+      <div class="cost-card free">
+        <div class="emoji">&#10024;</div>
+        <h4>FlowKeys</h4>
+        <div class="price">Free</div>
+        <div class="price-sub">Same sound. Zero cost. Zero clutter.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-number">2</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 3 — WHAT IS FLOWKEYS                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">The Solution</div>
+    <h2>Every keypress.<br>A satisfying click.</h2>
+
+    <p class="lead">FlowKeys is a lightweight app that runs quietly in the background on your Mac. Every time you press a key, it plays a crisp, realistic mechanical keyboard sound through your speakers or headphones.</p>
+
+    <p>No external hardware. No complicated setup. No subscription. Just the sound you love, on the keyboard you already have.</p>
+
+    <div class="divider"></div>
+
+    <h3>Two sounds. Your choice.</h3>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#9000;</div>
+        <h4>Mechanical</h4>
+        <p>The classic Cherry MX blue click. Sharp, crisp, unmistakable. The sound you hear in every coding video, every ASMR typing session, every mechanical keyboard review. Now on your MacBook.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#9790;</div>
+        <h4>Soft</h4>
+        <p>A quieter, gentler tactile tap. Subtle enough for shared spaces, coffee shops, or late-night sessions. All the satisfaction, none of the noise complaints.</p>
+      </div>
+    </div>
+
+    <p>Switch between them instantly with a keyboard shortcut. No settings to dig through, no menus to navigate.</p>
+
+    <div class="divider"></div>
+
+    <h3>Built to disappear.</h3>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Auto-start</h4>
+        <p>FlowKeys starts when your Mac starts. No manual launching, no dock icon, no menu bar clutter. It just works.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Near-zero latency</h4>
+        <p>Sounds are pre-loaded into memory. ~12ms response time. The click arrives the instant your finger hits the key.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Lightweight</h4>
+        <p>Uses minimal CPU and memory. No noticeable impact on battery life or performance. Invisible until you hear it.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-number">3</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 4 — BEFORE YOU BEGIN                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="banner">
+    <h2>Setup Guide</h2>
+    <p>Everything you need. Step by step. About 5 minutes.</p>
+  </div>
+
+  <div class="pad">
+
+    <div class="section-label">Before You Begin</div>
+    <h2>What you'll need.</h2>
+
+    <div class="feature-grid" style="margin-bottom: 24px;">
+      <div class="feature-card">
+        <h4>A Mac</h4>
+        <p>Any Mac running macOS 12 (Monterey) or later. MacBook, iMac, Mac Mini, Mac Studio, Mac Pro — all work.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Python 3</h4>
+        <p>A free programming language. Most Macs have it already. We'll check in Step 2. If not, it takes 2 minutes to install.</p>
+      </div>
+      <div class="feature-card">
+        <h4>5 Minutes</h4>
+        <p>That's all the time you need. Most of it is waiting for things to download. The actual setup is a few clicks.</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>New to this?</strong> Don't worry. You don't need any programming knowledge. You won't write a single line of code. Just follow the steps below — they're designed for everyone.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Step 1 of 5</div>
+    <h3>Download FlowKeys</h3>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Open the FlowKeys page on GitHub</h4>
+        <p>Open your web browser (Safari, Chrome, etc.) and go to:</p>
+        <div class="code-block">github.com/rhalder90/FlowKeys</div>
+        <p>GitHub is a website where developers share their projects. Think of it as an app store for open-source software. You don't need a GitHub account.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Download the ZIP file</h4>
+        <ul class="sub-steps">
+          <li>Look for the green button that says <strong>Code</strong></li>
+          <li>Click it — a dropdown menu appears</li>
+          <li>Click <strong>Download ZIP</strong></li>
+          <li>The file will download to your <strong>Downloads</strong> folder</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Unzip the file</h4>
+        <p>Go to your Downloads folder and double-click <strong>FlowKeys-main.zip</strong>. macOS will unzip it automatically. You'll see a folder called <strong>FlowKeys-main</strong>.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-number">4</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 5 — STEP 2 + 3                                -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Step 2 of 5</div>
+    <h3>Check for Python 3</h3>
+
+    <p>FlowKeys is built with Python, a free and popular programming language. Most Macs already have it installed. Let's check.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Open Terminal</h4>
+        <p>Press <span class="code-inline">Cmd + Space</span> to open Spotlight Search. Type <strong>Terminal</strong> and press <strong>Enter</strong>.</p>
+        <p>A window with a text prompt will appear. This is Terminal — it lets you type commands directly to your Mac.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Check if Python 3 is installed</h4>
+        <p>Type this command and press <strong>Enter</strong>:</p>
+        <div class="code-block">python3 --version</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Read the result</h4>
+        <p>If you see something like <span class="code-inline">Python 3.12.0</span> (any version 3.x), you're all set. Move on to Step 3.</p>
+        <p>If you see an error like "command not found", you need to install Python:</p>
+        <ul class="sub-steps">
+          <li>Go to <strong>python.org/downloads</strong> in your browser</li>
+          <li>Click the big yellow <strong>Download Python</strong> button</li>
+          <li>Open the downloaded file and follow the installer</li>
+          <li>When done, close and re-open Terminal, then try the command again</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Step 3 of 5</div>
+    <h3>Run the installer</h3>
+
+    <p>This is the easiest part. One double-click and the installer handles everything.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Open the FlowKeys-main folder</h4>
+        <p>Go to your Downloads folder and open the <strong>FlowKeys-main</strong> folder you unzipped earlier.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Double-click install.command</h4>
+        <p>You'll see a file called <strong>install.command</strong>. Double-click it.</p>
+        <p>A Terminal window will open and start running the installer. You'll see progress messages as it works. This takes about 30 seconds.</p>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>macOS might block it.</strong> If you see "install.command can't be opened because it is from an unidentified developer," right-click the file, select <strong>Open</strong>, then click <strong>Open</strong> again in the dialog.</p>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>What the installer does:</strong> It installs two small software libraries (pynput and pygame-ce), copies FlowKeys to your home folder at ~/FlowKeys, and sets it up to start automatically on login. That's it.</p>
+    </div>
+
+  </div>
+  <div class="page-number">5</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 6 — STEP 4 (ACCESSIBILITY)                    -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Step 4 of 5</div>
+    <h2>Grant Accessibility permission.</h2>
+    <p class="lead">This is the most important step. FlowKeys needs your explicit permission to detect keypresses. Without it, no sound will play.</p>
+    <p>macOS requires this for your security — no app can monitor your keyboard without your approval. You only need to do this once.</p>
+
+    <div class="divider-thin"></div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>System Settings opens automatically</h4>
+        <p>The installer opens <strong>System Settings > Privacy & Security > Accessibility</strong> for you. If it didn't open, go there manually: open <strong>System Settings</strong> > <strong>Privacy & Security</strong> > <strong>Accessibility</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Click the + button</h4>
+        <p>Look at the bottom-left of the Accessibility panel. Click the <strong>+</strong> button. Your Mac may ask for your password or Touch ID — enter it to continue.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Navigate to FlowKeys.app</h4>
+        <p>A file picker will open. You need to find <strong>FlowKeys.app</strong>. Here's how:</p>
+        <ul class="sub-steps">
+          <li>Press <span class="code-inline">Cmd + Shift + H</span> — this takes you to your home folder</li>
+          <li>You'll see a folder called <strong>FlowKeys</strong> — open it</li>
+          <li>Inside, you'll see <strong>FlowKeys.app</strong> — select it</li>
+          <li>Click <strong>Open</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Toggle it ON</h4>
+        <p>FlowKeys now appears in the Accessibility list. Make sure the toggle next to it is <strong>ON</strong> (blue). If it's off (gray), click it to turn it on.</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>Can't see FlowKeys.app?</strong> It might be hidden. In the file picker, press <span class="code-inline">Cmd + Shift + .</span> (period) to show hidden files. Or type <span class="code-inline">/Users/yourname/FlowKeys</span> in the Go bar (press <span class="code-inline">Cmd + Shift + G</span>).</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Step 5 of 5</div>
+    <h2>Start typing.</h2>
+
+    <p class="lead">That's it. You're done. Open any app and start typing — you should hear a crisp mechanical click on every keypress.</p>
+
+    <p>FlowKeys is now running in the background. It will start automatically every time you turn on or restart your Mac. No dock icon, no menu bar button. It's invisible — until you hear it.</p>
+
+    <div class="tip-box">
+      <p><strong>No sound?</strong> Try restarting your Mac. After the restart, the LaunchAgent will start FlowKeys with the Accessibility permission you just granted. If it still doesn't work, see the Troubleshooting section.</p>
+    </div>
+
+  </div>
+  <div class="page-number">6</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 7 — SHORTCUTS + USAGE                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Using FlowKeys</div>
+    <h2>Two shortcuts.<br>That's all you need.</h2>
+
+    <p>FlowKeys runs silently. No windows, no menus. Everything is controlled with two keyboard shortcuts.</p>
+
+    <table class="shortcut-table">
+      <thead>
+        <tr>
+          <th>Shortcut</th>
+          <th>What It Does</th>
+          <th>When To Use It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cmd + Ctrl + K</td>
+          <td>Toggle sound on/off</td>
+          <td>Joining a video call, watching a movie, or anytime you want silence</td>
+        </tr>
+        <tr>
+          <td>Cmd + Ctrl + S</td>
+          <td>Switch sound</td>
+          <td>Swap between mechanical and soft depending on your mood or setting</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>When you press a shortcut, FlowKeys confirms the change with a brief message in your Terminal log. No popup, no notification — just a quiet acknowledgment.</p>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Uninstalling</div>
+    <h2>Changed your mind?<br>No worries at all.</h2>
+
+    <p>Uninstalling is just as simple as installing.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Open Finder</h4>
+        <p>Press <span class="code-inline">Cmd + Shift + H</span> to go to your home folder.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Open the FlowKeys folder</h4>
+        <p>You'll see a folder called <strong>FlowKeys</strong>. Open it.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Double-click uninstall.command</h4>
+        <p>The uninstaller stops all FlowKeys processes, removes auto-start, and deletes the installed files. Clean and complete.</p>
+      </div>
+    </div>
+
+    <p class="subtle">Want to reinstall later? Just double-click install.command from your original download again. It's a fresh start every time.</p>
+
+  </div>
+  <div class="page-number">7</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 8 — TROUBLESHOOTING + CONTACT                 -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Troubleshooting</div>
+    <h2>Something not working?<br>We've got you.</h2>
+
+    <div class="faq-item">
+      <h4>No sound when I type</h4>
+      <p>This is almost always the Accessibility permission. Go to <strong>System Settings > Privacy & Security > Accessibility</strong> and make sure FlowKeys is listed and toggled <strong>ON</strong>. If it's not there, follow Step 4 again.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>FlowKeys doesn't start after reboot</h4>
+      <p>Open Terminal and run <span class="code-inline">launchctl list | grep flowkeys</span>. If nothing appears, double-click <strong>install.command</strong> again to re-register auto-start.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>"FlowKeys is already running"</h4>
+      <p>Another instance is active. Double-click <strong>uninstall.command</strong> to stop it, then run <strong>install.command</strong> again. Or force stop in Terminal:</p>
+      <div class="code-block">pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid</div>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Sound still playing after uninstall</h4>
+      <p>Very rare, but if it happens, open Terminal and run:</p>
+      <div class="code-block">pkill -9 -f "FlowKeys"</div>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Sound is delayed or laggy</h4>
+      <p>Close audio-heavy applications (video calls, music production software). FlowKeys uses ~12ms latency — any delay is usually caused by system audio contention.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Python or dependency errors</h4>
+      <p>Make sure Python 3 is installed (<span class="code-inline">python3 --version</span>). Reinstall dependencies manually: <span class="code-inline">pip3 install pynput pygame-ce</span>. If you recently updated macOS, re-run install.command.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>macOS blocks install.command</h4>
+      <p>Right-click the file, select <strong>Open</strong>, then click <strong>Open</strong> again in the security dialog. This is a one-time macOS Gatekeeper check for files downloaded from the internet.</p>
+    </div>
+
+  </div>
+  <div class="page-number">8</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 9 — CONTACT + CREDITS                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top" style="text-align: center; padding-top: 100px;">
+
+    <div class="section-label">Still Stuck?</div>
+    <h2>We're here to help.</h2>
+
+    <p style="max-width: 420px; margin: 0 auto 28px; font-size: 16px; color: #424245;">
+      If nothing in the troubleshooting section solved your issue, reach out. Include a description of what's happening and we'll get back to you.
+    </p>
+
+    <div style="background: linear-gradient(135deg, #007aff 0%, #5856d6 100%); border-radius: 16px; padding: 28px 32px; display: inline-block; margin-bottom: 40px;">
+      <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Email Us</p>
+      <p style="font-size: 22px; font-weight: 600; color: #ffffff; margin-bottom: 0;">write.rhalder90@gmail.com</p>
+    </div>
+
+    <div class="divider" style="max-width: 300px; margin: 40px auto;"></div>
+
+    <div class="section-label">Logs</div>
+    <p style="font-size: 14px; color: #424245; max-width: 420px; margin: 0 auto 8px;">
+      If you're reporting an issue, it helps to include the log file. You can find it at:
+    </p>
+    <div class="code-block" style="display: inline-block; text-align: left;">~/Library/Logs/FlowKeys/flowkeys.log</div>
+
+    <div class="divider" style="max-width: 300px; margin: 40px auto;"></div>
+
+    <div class="section-label">Credits</div>
+    <p style="font-size: 13px; color: #86868b; max-width: 400px; margin: 0 auto 6px;">
+      Keyboard sounds from OpenGameArt by eklee and qubodup, licensed under CC-BY 3.0.
+    </p>
+    <p style="font-size: 13px; color: #86868b; max-width: 400px; margin: 0 auto 6px;">
+      Built with Python, pynput, and pygame-ce.
+    </p>
+    <p style="font-size: 13px; color: #86868b; max-width: 400px; margin: 0 auto 24px;">
+      FlowKeys is free and open source under the MIT license.
+    </p>
+
+    <p style="font-size: 14px; color: #007aff; font-weight: 500;">
+      github.com/rhalder90/FlowKeys
+    </p>
+
+  </div>
+  <div class="page-number">9</div>
+</div>
+
+
+</body>
+</html>
