@@ -58,11 +58,13 @@ This takes 30 seconds and you only do it once.
 
 2. Click the **+** button (bottom-left)
 
-3. A file picker will open. Press **Cmd + Shift + G** to open the "Go to folder" bar. Type `/usr/bin/python3` and press **Enter**. Click **Open**.
+3. A file picker will open. Press **Cmd + Shift + G** to open the "Go to folder" bar. Type the **exact path shown by the installer** and press **Enter**. Click **Open**.
 
-   > **Why python3?** FlowKeys runs as a Python script, so macOS needs to grant Accessibility permission to `python3`. If `/usr/bin/python3` doesn't exist, run `which python3` in Terminal to find the correct path.
+   > **Why not just python3?** macOS tracks Accessibility permissions by the actual binary running your code. Depending on how Python is installed, the real binary may be deep inside a framework path (e.g. `/Library/Frameworks/Python.framework/.../Python`). The installer detects this for you and prints the correct path.
 
-4. Make sure the toggle next to **python3** is turned **ON** (blue)
+4. Make sure the toggle next to it is turned **ON** (blue)
+
+5. Also add **Terminal**: click **+** again, go to Applications → Utilities → Terminal, click Open, toggle **ON**
 
 ### Step 4. Done
 
@@ -98,7 +100,10 @@ Everything gets cleaned up. No leftover files, no lingering processes.
 ## Need Help?
 
 **No sound when you type?**
-The most common reason is the Accessibility permission from Step 3. Go back and make sure **python3** is added and toggled ON.
+The most common reason is the Accessibility permission from Step 3. Go back and make sure both the Python binary and **Terminal** are added and toggled ON.
+
+**Permission broke after a Python update?**
+Run this in Terminal to auto-fix: `python3 ~/FlowKeys/main.py --fix-permissions`
 
 **Still not working?**
 Email **write.rhalder90@gmail.com** — happy to help.

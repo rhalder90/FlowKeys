@@ -26,8 +26,9 @@ def show_help():
   Mechanical keyboard sounds for your Mac.
 
   USAGE:
-    python3 main.py           Start FlowKeys
-    python3 main.py --help    Show this help message
+    python3 main.py                   Start FlowKeys
+    python3 main.py --help            Show this help message
+    python3 main.py --fix-permissions Reset and re-grant Accessibility permission
 
   SHORTCUTS (while running):
     Cmd+Ctrl+K    Toggle sound on/off
@@ -44,6 +45,86 @@ def show_help():
     Press Ctrl+C in the terminal, or close the terminal window.
 """)
     # Exit after showing help — don't start the listener.
+    sys.exit(0)
+
+
+def fix_permissions():
+    """
+    Reset the macOS TCC (Transparency, Consent, Control) database for
+    Accessibility permissions and open System Settings for re-granting.
+
+    WHY THIS EXISTS:
+    macOS TCC tracks Accessibility permissions by binary path + code signature hash.
+    When Python updates (even a minor patch), the binary hash changes but the TCC
+    entry keeps the old hash. macOS silently rejects the now-mismatched binary.
+    Toggling the permission OFF/ON in System Settings doesn't help because it
+    operates on the stale entry. The only fix is to RESET the TCC entry entirely
+    so macOS re-evaluates the binary fresh.
+    """
+    import os
+
+    # Get the ACTUAL binary that macOS sees (not the symlink or stub).
+    # On macOS with official Python, python3 is a stub that exec's Python.app.
+    actual_binary = None
+    try:
+        result = subprocess.run(
+            ["ps", "-p", str(os.getpid()), "-o", "command="],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            candidate = result.stdout.strip().split()[0]
+            if os.path.exists(candidate):
+                actual_binary = candidate
+    except Exception:
+        pass
+
+    if not actual_binary:
+        actual_binary = os.path.realpath(sys.executable)
+
+    print(f"\n  FlowKeys Permission Repair Tool")
+    print(f"  ================================\n")
+    print(f"  Python binary that macOS sees:")
+    print(f"    {actual_binary}")
+    print()
+
+    # Step 1: Reset TCC entries that might be stale.
+    # tccutil is a macOS command that manages the TCC database.
+    # "reset Accessibility" clears ALL Accessibility entries for the given bundle ID.
+    print("  Resetting Accessibility permissions...")
+    tcc_targets = [
+        "com.apple.Terminal",         # Terminal.app
+        "com.googlecode.iterm2",      # iTerm2
+        "com.microsoft.VSCode",       # VS Code
+        "org.python.python",          # Official Python installer
+    ]
+
+    for bundle_id in tcc_targets:
+        result = subprocess.run(
+            ["tccutil", "reset", "Accessibility", bundle_id],
+            capture_output=True, text=True
+        )
+        if "Successfully" in result.stdout:
+            print(f"    ✓ Reset: {bundle_id}")
+
+    # Step 2: Open System Settings to the Accessibility pane.
+    print()
+    print("  Opening System Settings → Accessibility...")
+    subprocess.run([
+        "open",
+        "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+    ])
+
+    # Step 3: Show instructions with the exact binary path.
+    print(f"""
+  NOW DO THIS:
+  1. Click + → press Cmd+Shift+G
+  2. Paste this exact path:
+       {actual_binary}
+  3. Press Enter → click Open → toggle ON
+  4. Also add Terminal (Applications → Utilities → Terminal)
+  5. QUIT Terminal (Cmd+Q) and reopen it
+  6. Run: python3 ~/FlowKeys/main.py
+""")
     sys.exit(0)
 
 
@@ -161,11 +242,14 @@ def _shutdown(signum=None, frame=None):
 # It does NOT run when another file imports main.py.
 if __name__ == "__main__":
 
-    # --- Handle --help flag ---
+    # --- Handle command-line flags ---
     # sys.argv is a list of command-line arguments.
     # sys.argv[0] is the script name, sys.argv[1] would be the first argument.
     if len(sys.argv) > 1 and sys.argv[1] in ("--help", "-h"):
         show_help()  # Print help and exit
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--fix-permissions":
+        fix_permissions()  # Reset TCC and open System Settings
 
     # --- Set up logging ---
     # Initialize the logger first so all other modules can use it.
@@ -210,6 +294,18 @@ if __name__ == "__main__":
         print(f"  Make sure your sounds/ folder contains mechanical.wav and soft.wav")
         _remove_pid_file()
         sys.exit(1)
+
+    # --- Check Accessibility permission BEFORE starting listener ---
+    # Use the macOS AXIsProcessTrusted() API for an instant check.
+    # This catches stale TCC entries immediately instead of waiting 3 seconds.
+    if not listener.check_accessibility_trusted():
+        real_path = os.path.realpath(sys.executable)
+        logger.warning("Accessibility permission NOT granted for: %s", real_path)
+        listener._print_permission_instructions()
+        print("  TIP: Run this to auto-fix:")
+        print("    python3 ~/FlowKeys/main.py --fix-permissions\n")
+        # Don't exit — still start the listener in case the user grants
+        # permission while FlowKeys is running (macOS picks it up live).
 
     # --- Start the keyboard listener ---
     listener.start()  # Begins listening in a background thread

@@ -125,8 +125,19 @@ echo ""
 echo "  Setting up auto-start..."
 mkdir -p "$LAUNCH_AGENTS_DIR"
 mkdir -p "$LOG_DIR"
+# Get the ACTUAL binary macOS sees (not the symlink stub).
+# python3.14 is a stub that exec's Python.app — TCC tracks the real binary.
+PYTHON_BIN=$(python3 -c "
+import os, subprocess as sp
+try:
+    r = sp.run(['ps', '-p', str(os.getpid()), '-o', 'command='], capture_output=True, text=True)
+    b = r.stdout.strip().split()[0]
+    print(b if os.path.exists(b) else os.path.realpath(__import__('sys').executable))
+except: print(os.path.realpath(__import__('sys').executable))
+")
 cp "$INSTALL_DIR/$PLIST_NAME" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 sed -i '' "s|__FLOWKEYS_PATH__|$INSTALL_DIR|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
+sed -i '' "s|__PYTHON_BIN__|$PYTHON_BIN|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 sed -i '' "s|__HOME__|$HOME|g" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 launchctl load "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 echo "  ✓ FlowKeys will auto-start on login"
@@ -148,12 +159,14 @@ sleep 2
 echo ""
 echo "    1. Click the + button"
 echo "    2. Press Cmd+Shift+G to open the 'Go to folder' bar"
-echo "    3. Type /usr/bin/python3 and press Enter"
+echo "    3. Type this exact path and press Enter:"
+echo "         $PYTHON_BIN"
 echo "    4. Click Open"
 echo "    5. Make sure the toggle next to python3 is ON (blue)"
+echo "    6. Also add Terminal (Applications → Utilities → Terminal)"
 echo ""
-echo "    If /usr/bin/python3 doesn't exist, run: which python3"
-echo "    Then use that path instead."
+echo "    If sound stops working after a Python update, run:"
+echo "      python3 ~/FlowKeys/main.py --fix-permissions"
 echo ""
 
 # --- Done ---

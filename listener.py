@@ -3,6 +3,9 @@
 # Detects the toggle shortcut (Cmd+Ctrl+K) and switch shortcut (Cmd+Ctrl+S).
 
 # === IMPORTS ===
+import sys        # For getting the actual python executable path
+import ctypes     # For calling macOS AXIsProcessTrusted() directly
+import ctypes.util  # For finding system framework libraries
 import threading  # For running the accessibility check timer
 import logging    # For recording events
 from pynput import keyboard  # The library that captures global keypresses
@@ -156,28 +159,115 @@ def _on_release(key):
         pass
 
 
+def _get_python_binary_path():
+    """
+    Get the ACTUAL binary that macOS sees running this process.
+
+    On macOS with the official Python installer, python3 is a launcher stub
+    that exec's Python.app/Contents/MacOS/Python. sys.executable reports the
+    stub path, but macOS TCC checks the REAL binary. We use `ps` to find
+    what the OS actually sees.
+
+    Example:
+      sys.executable:  .../bin/python3
+      os.path.realpath: .../bin/python3.14   (the stub)
+      ps shows:         .../Python.app/Contents/MacOS/Python  (the REAL binary)
+    """
+    import os
+    import subprocess as sp
+
+    try:
+        # Ask the OS what binary is actually running for our process.
+        result = sp.run(
+            ["ps", "-p", str(os.getpid()), "-o", "command="],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            # ps output is "binary_path args...", take just the binary.
+            actual_binary = result.stdout.strip().split()[0]
+            if os.path.exists(actual_binary):
+                return actual_binary
+    except Exception:
+        pass
+
+    # Fallback: resolve symlinks on sys.executable.
+    return os.path.realpath(sys.executable)
+
+
+def check_accessibility_trusted():
+    """
+    Use the macOS Accessibility API (AXIsProcessTrusted) to check if this
+    process has Accessibility permission RIGHT NOW — no waiting needed.
+
+    Returns True if trusted, False if not.
+
+    How it works:
+    macOS stores Accessibility permissions in a TCC database. The function
+    AXIsProcessTrusted() in ApplicationServices.framework checks if the
+    current process (identified by its code signature hash) is in that database
+    with permission granted. This is the same check pynput hits internally.
+    """
+    try:
+        # Load the macOS ApplicationServices framework which contains
+        # the Accessibility API functions.
+        lib = ctypes.cdll.LoadLibrary(
+            "/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices"
+        )
+
+        # AXIsProcessTrusted() returns a C boolean:
+        # 1 = this process has Accessibility permission
+        # 0 = this process does NOT have Accessibility permission
+        lib.AXIsProcessTrusted.restype = ctypes.c_bool
+        return lib.AXIsProcessTrusted()
+
+    except Exception:
+        # If we can't load the framework (shouldn't happen on macOS),
+        # fall back to assuming it's fine and let the 3-second check catch it.
+        return True
+
+
+def _print_permission_instructions():
+    """
+    Print detailed instructions for fixing Accessibility permissions.
+    Shows the exact python binary path that needs to be added.
+    """
+    # Get the real binary path (resolving all symlinks).
+    real_path = _get_python_binary_path()
+
+    msg = (
+        "\n"
+        "  ⚠ ACCESSIBILITY PERMISSION MISSING\n"
+        "  FlowKeys needs Accessibility permission to hear your keystrokes.\n"
+        "\n"
+        f"  The python binary running FlowKeys is:\n"
+        f"    {real_path}\n"
+        "\n"
+        "  To fix this:\n"
+        "  1. Open System Settings → Privacy & Security → Accessibility\n"
+        f"  2. Click + → press Cmd+Shift+G → type:\n"
+        f"       {real_path}\n"
+        "  3. Press Enter → click Open → toggle ON\n"
+        "\n"
+        "  Also add your Terminal app (Applications → Utilities → Terminal)\n"
+        "\n"
+        "  If it was already added but stopped working, run:\n"
+        f"    python3 ~/FlowKeys/main.py --fix-permissions\n"
+        "\n"
+    )
+    print(msg)
+    logger.warning(
+        "Accessibility permission missing for binary: %s", real_path
+    )
+
+
 def _check_accessibility():
     """
-    Check if we've received any key events after 3 seconds.
-    If not, Accessibility permissions are probably not granted.
-    This runs on a timer in a separate thread.
+    Backup check: if no key events received after 3 seconds, warn the user.
+    This catches edge cases where AXIsProcessTrusted returned True but
+    pynput still can't receive events (e.g., Terminal not in Accessibility list).
     """
-    # If no key events were received in 3 seconds, warn the user.
     if not _received_key_event:
-        # Build a helpful warning message.
-        msg = (
-            "\n"
-            "  ⚠ WARNING: No keypresses detected after 3 seconds.\n"
-            "  FlowKeys needs Accessibility permission to hear your keystrokes.\n"
-            "\n"
-            "  To fix this:\n"
-            "  1. Open System Settings\n"
-            "  2. Go to Privacy & Security → Accessibility\n"
-            "  3. Enable your Terminal app (or Python)\n"
-            "  4. Restart FlowKeys\n"
-        )
-        # Print to terminal and log the warning.
-        print(msg)
+        _print_permission_instructions()
         logger.warning("No key events received — Accessibility permission may be missing")
 
 

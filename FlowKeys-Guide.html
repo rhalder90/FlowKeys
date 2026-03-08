@@ -336,7 +336,7 @@
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-text">
-          <strong>Grant Accessibility permission</strong> (one-time). The installer opens System Settings. Click <strong>+</strong> &rarr; press <span class="code-inline">Cmd + Shift + G</span> &rarr; type <strong>/usr/bin/python3</strong> &rarr; press Enter &rarr; click <strong>Open</strong> &rarr; toggle <strong>ON</strong>.
+          <strong>Grant Accessibility permission</strong> (one-time). The installer opens System Settings and shows the correct path. Click <strong>+</strong> &rarr; press <span class="code-inline">Cmd + Shift + G</span> &rarr; type the <strong>path shown by the installer</strong> &rarr; press Enter &rarr; click <strong>Open</strong> &rarr; toggle <strong>ON</strong>. Also add <strong>Terminal</strong> (Applications &rarr; Utilities &rarr; Terminal).
         </div>
       </div>
       <div class="step">
@@ -348,7 +348,7 @@
     </div>
 
     <div class="tip">
-      <strong>Tip:</strong> You only grant Accessibility permission once. It survives restarts and updates.
+      <strong>Tip:</strong> You only grant Accessibility permission once. If it stops working after a Python update, run: <span class="code-inline">python3 ~/FlowKeys/main.py --fix-permissions</span>
     </div>
 
     <div class="divider"></div>

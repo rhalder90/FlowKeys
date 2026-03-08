@@ -37,11 +37,14 @@ FlowKeys needs permission to detect your keypresses. Without this, it won't work
 1. The installer opens Accessibility settings automatically
 2. Click the **+** button
 3. Press **Cmd + Shift + G** to open the "Go to folder" bar
-4. Type `/usr/bin/python3` and press **Enter**
+4. Type the **exact path shown by the installer** and press **Enter**
 5. Click **Open**
-6. Make sure the toggle next to python3 is **ON**
+6. Make sure the toggle next to it is **ON**
+7. Also add **Terminal**: click **+** again → go to Applications → Utilities → Terminal → click Open → toggle **ON**
 
-> **Tip:** You must add `python3` (not FlowKeys.app) because FlowKeys runs as a Python script. If `/usr/bin/python3` doesn't exist, run `which python3` in Terminal to find the correct path.
+> **Tip:** The installer detects the correct Python binary path for your system and prints it. The path varies depending on how Python was installed (e.g. `/Library/Frameworks/Python.framework/.../Python`). Always use the path shown by the installer.
+>
+> **If permission breaks after a Python update**, run: `python3 ~/FlowKeys/main.py --fix-permissions`
 
 ## Keyboard Shortcuts
 
@@ -90,10 +93,10 @@ Check this file if something isn't working.
 ## Troubleshooting
 
 **No sound when I type**
-1. Make sure Accessibility permission is granted for **python3** (see above)
+1. Make sure Accessibility permission is granted (see above) — both the Python binary and Terminal must be added
 2. Check that your Mac volume is not muted
-3. Check the log file: `cat ~/Library/Logs/FlowKeys/flowkeys.log` — if you see "No key events received", Accessibility permission is missing
-4. Run `which python3` to find the correct path, then add that to Accessibility
+3. Run `python3 ~/FlowKeys/main.py --fix-permissions` to auto-detect the correct binary and reset permissions
+4. Check the log file: `cat ~/Library/Logs/FlowKeys/flowkeys.log` — if you see "No key events received", Accessibility permission is missing
 
 **FlowKeys doesn't start after reboot**
 1. Open Terminal and run:

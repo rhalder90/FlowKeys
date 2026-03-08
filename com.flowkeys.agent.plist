@@ -12,12 +12,14 @@
     <key>Label</key>
     <string>com.flowkeys.agent</string>
 
-    <!-- Run FlowKeys.app which wraps the Python script. -->
-    <!-- Using the .app bundle means users can add it to Accessibility easily. -->
-    <!-- __FLOWKEYS_PATH__ is a placeholder that install.command replaces. -->
+    <!-- Run python3 directly instead of through FlowKeys.app wrapper. -->
+    <!-- This ensures the SAME python binary runs from both Terminal and LaunchAgent, -->
+    <!-- so only ONE python binary needs Accessibility permission in TCC. -->
+    <!-- __PYTHON_BIN__ is replaced with the real python3 path during install. -->
     <key>ProgramArguments</key>
     <array>
-        <string>__FLOWKEYS_PATH__/FlowKeys.app/Contents/MacOS/FlowKeys</string>
+        <string>__PYTHON_BIN__</string>
+        <string>__FLOWKEYS_PATH__/main.py</string>
     </array>
 
     <!-- Start FlowKeys automatically when the user logs in. -->

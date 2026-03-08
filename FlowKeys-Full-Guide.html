@@ -684,13 +684,6 @@
 <div class="page">
   <div class="pad pad-top">
 
-
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- PAGE 6 — STEP 4 (ACCESSIBILITY)                    -->
-<!-- ═══════════════════════════════════════════════════ -->
-<div class="page">
-  <div class="pad pad-top">
-
     <div class="section-label">Step 3 of 3</div>
     <h2>Grant Accessibility permission.</h2>
     <p class="lead">This is the most important step. FlowKeys needs your explicit permission to detect keypresses. Without it, no sound will play.</p>
@@ -717,11 +710,11 @@
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
-        <h4>Add python3</h4>
-        <p>A file picker will open. You need to add the <strong>python3</strong> binary:</p>
+        <h4>Add the Python binary</h4>
+        <p>A file picker will open. You need to add the Python binary that the installer showed you:</p>
         <ul class="sub-steps">
           <li>Press <span class="code-inline">Cmd + Shift + G</span> — this opens a "Go to folder" bar</li>
-          <li>Type <strong>/usr/bin/python3</strong> and press <strong>Enter</strong></li>
+          <li>Type the <strong>exact path shown by the installer</strong> and press <strong>Enter</strong></li>
           <li>Click <strong>Open</strong></li>
         </ul>
       </div>
@@ -731,12 +724,20 @@
       <div class="step-num">4</div>
       <div class="step-content">
         <h4>Toggle it ON</h4>
-        <p>python3 now appears in the Accessibility list. Make sure the toggle next to it is <strong>ON</strong> (blue). If it's off (gray), click it to turn it on.</p>
+        <p>The Python binary now appears in the Accessibility list. Make sure the toggle next to it is <strong>ON</strong> (blue). If it's off (gray), click it to turn it on.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h4>Also add Terminal</h4>
+        <p>Click <strong>+</strong> again, navigate to <strong>Applications → Utilities → Terminal</strong>, click <strong>Open</strong>, and toggle it <strong>ON</strong>. Terminal also needs Accessibility permission to forward keypresses to FlowKeys.</p>
       </div>
     </div>
 
     <div class="tip-box">
-      <p><strong>Why python3?</strong> FlowKeys runs as a Python script, so macOS needs to grant Accessibility permission to the <span class="code-inline">python3</span> binary. If <span class="code-inline">/usr/bin/python3</span> doesn't exist, run <span class="code-inline">which python3</span> in Terminal to find the correct path.</p>
+      <p><strong>Why this path?</strong> macOS tracks Accessibility permissions by the actual binary running your code. Python's <span class="code-inline">python3</span> command is often a launcher stub that runs a different binary internally. The installer detects the real binary and shows you the correct path. If permission breaks after a Python update, run: <span class="code-inline">python3 ~/FlowKeys/main.py --fix-permissions</span></p>
     </div>
 
     <div class="divider"></div>
@@ -821,7 +822,7 @@
 
     <div class="faq-item">
       <h4>No sound when I type</h4>
-      <p>This is almost always the Accessibility permission. Go to <strong>System Settings > Privacy & Security > Accessibility</strong> and make sure <strong>python3</strong> is listed and toggled <strong>ON</strong>. If it's not there, follow Step 3 again.</p>
+      <p>This is almost always the Accessibility permission. Go to <strong>System Settings > Privacy & Security > Accessibility</strong> and make sure both the Python binary and <strong>Terminal</strong> are listed and toggled <strong>ON</strong>. If they're not there, follow Step 3 again. You can also run <span class="code-inline">python3 ~/FlowKeys/main.py --fix-permissions</span> to auto-detect the correct binary and reset permissions.</p>
     </div>
 
     <div class="divider-thin"></div>
