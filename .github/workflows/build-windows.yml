@@ -1,0 +1,57 @@
+name: Build Windows .exe
+
+on:
+  push:
+    tags:
+      - 'v*'  # Only build when you push a version tag (e.g., v1.1.0)
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller pygame-ce pynput
+
+      - name: Build .exe with PyInstaller
+        run: |
+          pyinstaller windows/flowkeys.spec
+
+      - name: Upload .exe as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlowKeys-Windows
+          path: dist/FlowKeys.exe
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/FlowKeys.exe
+          body: |
+            ## FlowKeys for Windows
+
+            **Download `FlowKeys.exe` below and double-click to run.**
+
+            No installation needed. No Python required. Just download and type.
+
+            ### First time?
+            - Windows may show a "Windows protected your PC" warning
+            - Click **More info** → **Run anyway** (this is normal for unsigned apps)
+
+            ### Auto-start on login
+            Run: `FlowKeys.exe --enable-autostart`
+
+            ### Shortcuts
+            - `Win+Ctrl+K` — Toggle sound on/off
+            - `Win+Ctrl+S` — Switch between mechanical and soft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
