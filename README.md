@@ -1,12 +1,14 @@
 # FlowKeys
 
-Mechanical keyboard sounds for your Mac. Every keypress plays a satisfying click through your speakers.
+Mechanical keyboard sounds for your Mac or PC. Every keypress plays a satisfying click through your speakers.
 
 Two sounds included: **mechanical** (Cherry MX-style) and **soft** (quiet tactile). Switch between them with a keyboard shortcut.
 
+**Works on macOS and Windows.**
+
 ---
 
-## Install
+## Install — Mac
 
 Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter) and paste this:
 
@@ -14,7 +16,7 @@ Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter) and paste 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"
 ```
 
-That's it. The script downloads FlowKeys, installs it to `~/FlowKeys`, and sets up auto-start. No Gatekeeper warnings, no "can't be verified" popups.
+That's it. The script downloads FlowKeys, installs it to `~/FlowKeys`, and sets up auto-start.
 
 After running the command, grant Accessibility permission (see below) and you're done.
 
@@ -30,9 +32,9 @@ After running the command, grant Accessibility permission (see below) and you're
 The installer copies FlowKeys to `~/FlowKeys` and sets up auto-start. You can delete the downloaded folder after installing.
 </details>
 
-## Accessibility Permission (Required — One-Time Setup)
+### Accessibility Permission (Mac — One-Time Setup)
 
-FlowKeys needs permission to detect your keypresses. Without this, it won't work. You only do this once.
+FlowKeys needs permission to detect your keypresses. You only do this once.
 
 1. The installer opens Accessibility settings automatically
 2. Click the **+** button
@@ -42,35 +44,11 @@ FlowKeys needs permission to detect your keypresses. Without this, it won't work
 6. Make sure the toggle next to it is **ON**
 7. Also add **Terminal**: click **+** again → go to Applications → Utilities → Terminal → click Open → toggle **ON**
 
-> **Tip:** The installer detects the correct Python binary path for your system and prints it. The path varies depending on how Python was installed (e.g. `/Library/Frameworks/Python.framework/.../Python`). Always use the path shown by the installer.
+> **Tip:** The installer detects the correct Python binary path for your system and prints it. The path varies depending on how Python was installed. Always use the path shown by the installer.
 >
 > **If permission breaks after a Python update**, run: `python3 ~/FlowKeys/main.py --fix-permissions`
 
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|---|---|
-| `Cmd + Ctrl + K` | Toggle sound on/off |
-| `Cmd + Ctrl + S` | Switch between mechanical and soft sound |
-
-## Run Manually
-
-If you prefer not to use auto-start:
-
-```bash
-cd ~/FlowKeys
-python3 main.py
-```
-
-Press `Ctrl+C` to stop.
-
-To see all options:
-
-```bash
-python3 main.py --help
-```
-
-## Uninstall
+### Uninstall — Mac
 
 Open Terminal and paste:
 
@@ -80,78 +58,141 @@ Open Terminal and paste:
 
 This stops FlowKeys, removes auto-start, and deletes all installed files.
 
-## Logs
+---
 
-FlowKeys writes logs to:
+## Install — Windows
+
+1. Go to [**Releases**](https://github.com/rhalder90/FlowKeys/releases) and download **FlowKeys.exe**
+2. Double-click **FlowKeys.exe**
+3. Start typing — you'll hear clicks immediately
+
+**No Python, no Terminal, no permissions needed.** Just download one file and run it.
+
+> **Windows SmartScreen warning:** Windows may show a blue screen saying "Windows protected your PC". This is normal for unsigned apps. Click **More info** → **Run anyway**. FlowKeys is open source and safe.
+
+### Auto-Start on Login (Windows)
+
+To have FlowKeys start automatically when you turn on your PC:
 
 ```
-~/Library/Logs/FlowKeys/flowkeys.log
+FlowKeys.exe --enable-autostart
 ```
 
-Check this file if something isn't working.
+To remove auto-start:
 
-## Troubleshooting
+```
+FlowKeys.exe --disable-autostart
+```
 
-**No sound when I type**
-1. Make sure Accessibility permission is granted (see above) — both the Python binary and Terminal must be added
-2. Check that your Mac volume is not muted
-3. Run `python3 ~/FlowKeys/main.py --fix-permissions` to auto-detect the correct binary and reset permissions
-4. Check the log file: `cat ~/Library/Logs/FlowKeys/flowkeys.log` — if you see "No key events received", Accessibility permission is missing
+### Uninstall — Windows
 
-**FlowKeys doesn't start after reboot**
-1. Open Terminal and run:
-   ```bash
-   launchctl list | grep flowkeys
-   ```
-2. If nothing shows up, double-click `install.command` again to re-register auto-start
-3. If it shows up but FlowKeys isn't working, check `~/Library/Logs/FlowKeys/stderr.log` for errors
+1. If you enabled auto-start, run `FlowKeys.exe --disable-autostart` first
+2. Delete `FlowKeys.exe`
 
-**"FlowKeys is already running"**
-- Another instance is active. Double-click `~/FlowKeys/uninstall.command` to stop it, then try again.
-- Or run this in Terminal to force stop:
-  ```bash
-  pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid
-  ```
+That's it. No registry entries, no hidden files to clean up.
 
-**Sound still playing after uninstall**
-- Run this in Terminal:
-  ```bash
-  pkill -9 -f "FlowKeys"
-  ```
+---
 
-**Sound is delayed or laggy**
-- Close other audio-heavy apps (video calls, music production software)
-- Check `~/Library/Logs/FlowKeys/flowkeys.log` for audio mixer errors
+## Keyboard Shortcuts
 
-**macOS says "install.command can't be verified" or mentions malware**
+| | Mac | Windows |
+|---|---|---|
+| Toggle sound on/off | `Cmd + Ctrl + K` | `Win + Ctrl + K` |
+| Switch sound | `Cmd + Ctrl + S` | `Win + Ctrl + S` |
 
-*Method 1 — Right-click (try this first):*
-1. Click **Done** (not "Move to Bin")
-2. **Right-click** on `install.command`
-3. Click **Open** from the context menu
-4. A **new dialog** appears with an **Open** button — click it
+---
 
-*Method 2 — If right-click still doesn't work:*
-1. Click **Done**
-2. Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter)
-3. Paste this command and press Enter:
-   ```bash
-   xattr -dr com.apple.quarantine ~/Downloads/FlowKeys*/
-   ```
-4. Now double-click `install.command` — it will open without warning
+## FAQ
 
-This is normal for files downloaded from the internet. macOS blocks unsigned scripts by default. FlowKeys is open source and safe.
+**What is FlowKeys?**
+A tiny free app that plays a mechanical keyboard click sound every time you press a key. Works on Mac and Windows.
 
-**Python or dependency errors**
-1. Make sure Python 3 is installed: `python3 --version`
-2. Reinstall dependencies: `pip3 install pynput pygame-ce`
-3. If you recently updated macOS, re-run `install.command`
+**Is it free?**
+Yes. Free and open source (MIT license).
 
-**Reinstalling / Updating**
-- Just double-click `install.command` again — it stops the old version and installs a fresh copy
+**Does it work on Windows?**
+Yes. Download `FlowKeys.exe` from the [Releases](https://github.com/rhalder90/FlowKeys/releases) page. No installation needed.
+
+**Does it work on Mac?**
+Yes. Run the one-line installer in Terminal (see above).
+
+**Do I need to install Python?**
+- **Mac:** Python 3 is required. Most Macs have it already. The installer will tell you if it's missing.
+- **Windows:** No. The `.exe` bundles everything. Just download and run.
+
+**Does it start automatically when I restart my computer?**
+- **Mac:** Yes, automatically. The installer sets this up.
+- **Windows:** Run `FlowKeys.exe --enable-autostart` once. After that, it starts on every login.
+
+**How do I stop it?**
+Press `Ctrl+C` in the terminal window, or close the window. On Windows, you can also use Task Manager.
+
+**How do I switch between mechanical and soft sounds?**
+Press `Cmd+Ctrl+S` on Mac or `Win+Ctrl+S` on Windows.
+
+**Will my antivirus flag it? (Windows)**
+Some antivirus programs may flag keyboard hooks as suspicious. This is because FlowKeys listens to your keypresses to play sounds. Add FlowKeys as an exception if your antivirus blocks it. FlowKeys is open source — you can verify the code yourself.
+
+**Why does Windows say "Windows protected your PC"?**
+This is Windows SmartScreen. It shows this for any unsigned `.exe` downloaded from the internet. Click **More info** → **Run anyway**. This is a one-time warning.
+
+**Why does Mac need Accessibility permission but Windows doesn't?**
+macOS requires explicit permission for any app that monitors keyboard input. Windows allows keyboard hooks without special permissions.
+
+**No sound when I type (Mac)**
+1. Make sure Accessibility permission is granted — both the Python binary and Terminal must be added
+2. Run `python3 ~/FlowKeys/main.py --fix-permissions` to auto-fix
+3. Check logs: `cat ~/Library/Logs/FlowKeys/flowkeys.log`
+
+**No sound when I type (Windows)**
+1. Make sure your volume is not muted
+2. Check if your antivirus is blocking FlowKeys — add it as an exception
+3. Try running FlowKeys as Administrator (right-click → Run as administrator)
+
+**Can I use it on both Mac and Windows?**
+Yes. The same codebase runs on both. Mac uses the Terminal installer, Windows uses the `.exe`.
+
+**Where are the log files?**
+- **Mac:** `~/Library/Logs/FlowKeys/flowkeys.log`
+- **Windows:** `%LOCALAPPDATA%\FlowKeys\Logs\flowkeys.log`
 
 **Still stuck?**
-- Email **write.rhalder90@gmail.com** with a description of your issue and the contents of `~/Library/Logs/FlowKeys/flowkeys.log`
+Email **write.rhalder90@gmail.com** — happy to help.
+
+---
+
+## Troubleshooting — Mac
+
+**FlowKeys doesn't start after reboot**
+1. Run `launchctl list | grep flowkeys` in Terminal
+2. If nothing shows up, re-run the install command
+
+**"FlowKeys is already running"**
+```bash
+pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid
+```
+
+**macOS says "install.command can't be verified"**
+Use the one-line Terminal installer instead — it bypasses Gatekeeper completely.
+
+**Python or dependency errors**
+```bash
+python3 --version
+pip3 install pynput pygame-ce
+```
+
+## Troubleshooting — Windows
+
+**"FlowKeys is already running"**
+Open Task Manager → find FlowKeys → End task. Then run FlowKeys.exe again.
+
+**Sound is delayed**
+Close audio-heavy apps (video calls, music production software).
+
+**Keyboard shortcuts don't work in admin apps**
+If you run an app as Administrator, FlowKeys can't detect keypresses in that app. This is a Windows security feature.
+
+---
 
 ## Sound Credits
 
