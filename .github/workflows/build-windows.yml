@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'  # Only build when you push a version tag (e.g., v1.1.0)
 
+permissions:
+  contents: write  # Required to create GitHub Releases
+
 jobs:
   build:
     runs-on: windows-latest
