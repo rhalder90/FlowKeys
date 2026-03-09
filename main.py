@@ -92,23 +92,9 @@ def fix_permissions():
     print(f"    {actual_binary}")
     print()
 
-    print("  Resetting Accessibility permissions...")
-    tcc_targets = [
-        "com.apple.Terminal",
-        "com.googlecode.iterm2",
-        "com.microsoft.VSCode",
-        "org.python.python",
-    ]
-
-    for bundle_id in tcc_targets:
-        result = subprocess.run(
-            ["tccutil", "reset", "Accessibility", bundle_id],
-            capture_output=True, text=True
-        )
-        if "Successfully" in result.stdout:
-            print(f"    ✓ Reset: {bundle_id}")
-
-    print()
+    # Open System Settings to the Accessibility pane.
+    # NOTE: We do NOT run tccutil reset — that destroys working permissions
+    # for Terminal, VS Code, etc. Instead we guide the user to fix it manually.
     print("  Opening System Settings → Accessibility...")
     subprocess.run([
         "open",
@@ -116,14 +102,15 @@ def fix_permissions():
     ])
 
     print(f"""
-  NOW DO THIS:
-  1. Click + → press Cmd+Shift+G
-  2. Paste this exact path:
+  WHAT TO DO:
+  1. Remove any old Python/FlowKeys entries (select → click − button)
+  2. Click + → press Cmd+Shift+G
+  3. Paste this exact path:
        {actual_binary}
-  3. Press Enter → click Open → toggle ON
-  4. Also add Terminal (Applications → Utilities → Terminal)
-  5. QUIT Terminal (Cmd+Q) and reopen it
-  6. Run: python3 ~/FlowKeys/main.py
+  4. Press Enter → click Open → toggle ON
+  5. Make sure Terminal is also listed and toggled ON
+  6. QUIT Terminal (Cmd+Q) and reopen it
+  7. Run: python3 ~/FlowKeys/main.py
 """)
     sys.exit(0)
 
