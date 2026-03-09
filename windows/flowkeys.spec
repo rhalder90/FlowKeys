@@ -1,6 +1,6 @@
 # flowkeys.spec — PyInstaller build specification for FlowKeys Windows .exe
 #
-# Build command (run on Windows):
+# Build command (run from repo root on Windows):
 #   pip install pyinstaller pygame-ce pynput
 #   pyinstaller windows/flowkeys.spec
 #
@@ -8,18 +8,23 @@
 
 import os
 
+# SPECPATH is a PyInstaller built-in: directory containing this spec file
+# Repo root is one level up from windows/
+REPO_ROOT = os.path.normpath(os.path.join(SPECPATH, '..'))
+
 block_cipher = None
 
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    [os.path.join(REPO_ROOT, 'main.py')],
+    pathex=[REPO_ROOT],
     binaries=[],
     datas=[
-        ('sounds/*.wav', 'sounds'),  # Bundle sound files into the exe
+        (os.path.join(REPO_ROOT, 'sounds', '*.wav'), 'sounds'),
     ],
     hiddenimports=[
         'pynput.keyboard._win32',    # pynput Windows keyboard backend
         'pynput._util.win32',        # pynput Windows utilities
+        'windows.windows_autostart', # Windows autostart module
     ],
     hookspath=[],
     hooksconfig={},

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FlowKeys — Master Guide</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    color: #1d1d1f;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ——— Utility ——— */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  .pad { padding: 48px 52px; }
+  .pad-top { padding-top: 56px; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: #1d1d1f;
+  }
+
+  h3 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    color: #1d1d1f;
+  }
+
+  p {
+    font-size: 15px;
+    color: #424245;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  p.lead {
+    font-size: 17px;
+    color: #1d1d1f;
+    line-height: 1.55;
+  }
+
+  p.subtle {
+    font-size: 13px;
+    color: #86868b;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e5e5e7;
+    margin: 28px 0;
+  }
+
+  .divider-thin {
+    height: 1px;
+    background: #e5e5e7;
+    margin: 16px 0;
+  }
+
+  .code-inline {
+    font-family: "SF Mono", "Cascadia Code", Consolas, Menlo, Monaco, monospace;
+    font-size: 12px;
+    background: #f5f5f7;
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: #1d1d1f;
+  }
+
+  .code-block {
+    font-family: "SF Mono", "Cascadia Code", Consolas, Menlo, Monaco, monospace;
+    font-size: 12.5px;
+    background: #1d1d1f;
+    color: #f5f5f7;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 10px 0 14px;
+    line-height: 1.5;
+  }
+
+  /* ——— Hero (Page 1) ——— */
+  .hero {
+    background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3e 50%, #0d2137 100%);
+    color: #ffffff;
+    text-align: center;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .hero .tagline {
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.45;
+    max-width: 480px;
+  }
+
+  .hero .platforms {
+    margin-top: 32px;
+    display: flex;
+    gap: 24px;
+  }
+
+  .hero .platform-badge {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+    padding: 8px 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+  }
+
+  .hero .version {
+    position: absolute;
+    bottom: 40px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  /* ——— Cost Section ——— */
+  .cost-row {
+    display: flex;
+    gap: 16px;
+    margin: 24px 0;
+    align-items: stretch;
+  }
+
+  .cost-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .cost-card.expensive { background: #f5f5f7; }
+
+  .cost-card.free {
+    background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+    color: #fff;
+  }
+
+  .cost-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1d1d1f;
+  }
+
+  .cost-card.free h4 { color: rgba(255,255,255,0.85); }
+
+  .cost-card .price {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .cost-card .price-sub {
+    font-size: 13px;
+    color: #86868b;
+  }
+
+  .cost-card.free .price-sub { color: rgba(255,255,255,0.6); }
+
+  .cost-list {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+  }
+
+  .cost-list li {
+    font-size: 15px;
+    color: #424245;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f2;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cost-list li:last-child { border-bottom: none; }
+  .cost-list .item-name { color: #1d1d1f; font-weight: 500; }
+  .cost-list .item-price { color: #86868b; }
+
+  /* ——— Feature Cards ——— */
+  .feature-grid {
+    display: flex;
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .feature-card {
+    flex: 1;
+    background: #f5f5f7;
+    border-radius: 14px;
+    padding: 24px 20px;
+  }
+
+  .feature-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1d1d1f;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: #86868b;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  /* ——— Steps ——— */
+  .step {
+    display: flex;
+    gap: 18px;
+    margin: 20px 0;
+    page-break-inside: avoid;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: #1d1d1f;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-num.mac-step { background: #1d1d1f; }
+  .step-num.win-step { background: #0078d4; }
+
+  .step-content h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1d1d1f;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: #424245;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .sub-steps {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+  }
+
+  .sub-steps li {
+    font-size: 14px;
+    color: #424245;
+    line-height: 1.55;
+    padding: 3px 0 3px 22px;
+    position: relative;
+  }
+
+  .sub-steps li::before {
+    content: "\203A";
+    position: absolute;
+    left: 6px;
+    color: #007aff;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* ——— Tip / Warning Boxes ——— */
+  .tip-box {
+    background: #f0f5ff;
+    border-left: 4px solid #007aff;
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+
+  .tip-box p {
+    font-size: 13px;
+    color: #1d1d1f;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  .tip-box strong { color: #007aff; }
+
+  .warning-box {
+    background: #fff8f0;
+    border-left: 4px solid #ff9500;
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+
+  .warning-box p {
+    font-size: 13px;
+    color: #1d1d1f;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  .warning-box strong { color: #ff9500; }
+
+  /* ——— Shortcut Table ——— */
+  .shortcut-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e5e5e7;
+    margin: 16px 0;
+  }
+
+  .shortcut-table th {
+    background: #f5f5f7;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #86868b;
+    padding: 12px 18px;
+    text-align: left;
+  }
+
+  .shortcut-table td {
+    font-size: 15px;
+    padding: 14px 18px;
+    border-top: 1px solid #e5e5e7;
+    color: #1d1d1f;
+  }
+
+  .shortcut-table td:first-child,
+  .shortcut-table td:nth-child(2) {
+    font-family: "SF Mono", "Cascadia Code", Consolas, Menlo, Monaco, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ——— FAQ ——— */
+  .faq-item {
+    margin: 16px 0;
+  }
+
+  .faq-item h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 4px;
+  }
+
+  .faq-item p {
+    font-size: 13.5px;
+    color: #424245;
+    line-height: 1.55;
+    margin-bottom: 4px;
+  }
+
+  /* ——— Banner ——— */
+  .banner {
+    background: #1d1d1f;
+    color: #ffffff;
+    text-align: center;
+    padding: 36px 52px;
+  }
+
+  .banner h2 {
+    color: #ffffff;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .banner p {
+    color: rgba(255,255,255,0.6);
+    font-size: 15px;
+  }
+
+  .banner-mac {
+    background: linear-gradient(135deg, #1d1d1f 0%, #2d2d3f 100%);
+  }
+
+  .banner-win {
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  }
+
+  /* ——— Page Numbers ——— */
+  .page-number {
+    position: absolute;
+    bottom: 28px;
+    right: 52px;
+    font-size: 11px;
+    color: #c7c7cc;
+    font-weight: 500;
+  }
+
+  /* ——— Footer ——— */
+  .footer-final {
+    background: #f5f5f7;
+    text-align: center;
+    padding: 36px 52px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .footer-final .email {
+    font-size: 20px;
+    font-weight: 600;
+    color: #007aff;
+    margin-bottom: 6px;
+  }
+
+  .footer-final p {
+    font-size: 12px;
+    color: #86868b;
+    line-height: 1.6;
+  }
+
+  .footer-final a {
+    color: #007aff;
+    text-decoration: none;
+  }
+
+  /* ——— Print ——— */
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 1 — HERO                                      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="hero">
+    <div class="hero-label">Master Guide</div>
+    <h1>FlowKeys</h1>
+    <p class="tagline">The mechanical keyboard sound you love.<br>On the computer you already own.</p>
+    <div class="platforms">
+      <div class="platform-badge">macOS</div>
+      <div class="platform-badge">Windows</div>
+    </div>
+    <div class="version">v1.1.0 &mdash; Free &amp; Open Source</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 2 — THE PROBLEM                               -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">The Problem</div>
+    <h2>Mechanical keyboards are incredible.<br>Their price tags aren't.</h2>
+
+    <p class="lead">There's something deeply satisfying about a mechanical keyboard. The crisp click on every keypress. The tactile feedback under your fingers. It transforms typing from a chore into something you actually enjoy.</p>
+
+    <p>But that experience comes at a cost.</p>
+
+    <ul class="cost-list">
+      <li><span class="item-name">Entry-level mechanical keyboard</span><span class="item-price">$60 &ndash; $80</span></li>
+      <li><span class="item-name">Mid-range (Cherry MX, hot-swap)</span><span class="item-price">$100 &ndash; $180</span></li>
+      <li><span class="item-name">Premium (wireless, RGB, aluminum)</span><span class="item-price">$180 &ndash; $300</span></li>
+      <li><span class="item-name">Custom build (enthusiast-grade)</span><span class="item-price">$300 &ndash; $800+</span></li>
+    </ul>
+
+    <p>What if you didn't have to choose?</p>
+
+    <div class="cost-row">
+      <div class="cost-card expensive">
+        <h4>Mechanical Keyboard</h4>
+        <div class="price">$80 &ndash; $300+</div>
+        <div class="price-sub">Plus desk space. Plus cable clutter.</div>
+      </div>
+      <div class="cost-card free">
+        <h4>FlowKeys</h4>
+        <div class="price">Free</div>
+        <div class="price-sub">Same sound. Zero cost. Zero clutter.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-number">2</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 3 — WHAT IS FLOWKEYS                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">The Solution</div>
+    <h2>Every keypress.<br>A satisfying click.</h2>
+
+    <p class="lead">FlowKeys is a lightweight app that runs quietly in the background. Every time you press a key, it plays a crisp, realistic mechanical keyboard sound through your speakers or headphones.</p>
+
+    <p>No external hardware. No complicated setup. No subscription. Works on both Mac and Windows.</p>
+
+    <div class="divider"></div>
+
+    <h3>Two sounds. Your choice.</h3>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Mechanical</h4>
+        <p>The classic Cherry MX blue click. Sharp, crisp, unmistakable. The sound you hear in every coding video and ASMR typing session.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Soft</h4>
+        <p>A quieter, gentler tactile tap. Subtle enough for shared spaces, coffee shops, or late-night sessions.</p>
+      </div>
+    </div>
+
+    <p>Switch between them instantly with a keyboard shortcut.</p>
+
+    <div class="divider"></div>
+
+    <h3>Built to disappear.</h3>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Auto-start</h4>
+        <p>Starts when your computer starts. No manual launching, no dock icon, no menu bar clutter.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Near-zero latency</h4>
+        <p>Sounds are pre-loaded into memory. ~12ms response time. The click arrives the instant your finger hits the key.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Lightweight</h4>
+        <p>Minimal CPU and memory. No noticeable impact on battery life or performance.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-number">3</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 4 — MAC SETUP                                 -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="banner banner-mac">
+    <h2>Mac Setup Guide</h2>
+    <p>One Terminal command. Grant one permission. About 5 minutes.</p>
+  </div>
+
+  <div class="pad">
+
+    <div class="step">
+      <div class="step-num mac-step">1</div>
+      <div class="step-content">
+        <h4>Open Terminal</h4>
+        <p>Press <span class="code-inline">Cmd + Space</span> to open Spotlight. Type <strong>Terminal</strong> and press <strong>Enter</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num mac-step">2</div>
+      <div class="step-content">
+        <h4>Paste the install command</h4>
+        <p>Copy and paste this entire line into Terminal, then press <strong>Enter</strong>:</p>
+        <div class="code-block">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/install-remote.sh)"</div>
+        <p>The installer downloads FlowKeys, installs dependencies, and sets up auto-start. Takes about 30 seconds.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num mac-step">3</div>
+      <div class="step-content">
+        <h4>Grant Accessibility permission</h4>
+        <p>The installer opens System Settings automatically. You need to add two items:</p>
+        <ul class="sub-steps">
+          <li>Click the <strong>+</strong> button</li>
+          <li>Press <span class="code-inline">Cmd + Shift + G</span> to open "Go to folder"</li>
+          <li>Type the <strong>exact path shown by the installer</strong> and press Enter</li>
+          <li>Click <strong>Open</strong> and make sure the toggle is <strong>ON</strong></li>
+          <li>Click <strong>+</strong> again &rarr; go to Applications &rarr; Utilities &rarr; <strong>Terminal</strong> &rarr; Open &rarr; toggle <strong>ON</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num mac-step">&check;</div>
+      <div class="step-content">
+        <h4>Done. Start typing.</h4>
+        <p>FlowKeys auto-starts on every login. Nothing to remember.</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>Why the path?</strong> macOS tracks Accessibility permissions by the actual binary. The installer detects the correct Python binary for your system. If permission breaks after a Python update, run: <span class="code-inline">python3 ~/FlowKeys/main.py --fix-permissions</span></p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="section-label">Uninstall Mac</div>
+    <p>Open Terminal and paste:</p>
+    <div class="code-block">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/rhalder90/FlowKeys/main/uninstall-remote.sh)"</div>
+
+  </div>
+  <div class="page-number">4</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 5 — WINDOWS SETUP                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="banner banner-win">
+    <h2>Windows Setup Guide</h2>
+    <p>Download. Double-click. Done. Under 2 minutes.</p>
+  </div>
+
+  <div class="pad">
+
+    <div class="step">
+      <div class="step-num win-step">1</div>
+      <div class="step-content">
+        <h4>Download FlowKeys.exe</h4>
+        <p>Go to <strong>github.com/rhalder90/FlowKeys/releases</strong> and download <strong>FlowKeys.exe</strong>. That's the entire app &mdash; one file, nothing to install.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num win-step">2</div>
+      <div class="step-content">
+        <h4>Double-click FlowKeys.exe</h4>
+        <p>Windows may show a blue warning: <strong>"Windows protected your PC"</strong>. This is normal for unsigned apps downloaded from the internet.</p>
+        <ul class="sub-steps">
+          <li>Click <strong>More info</strong></li>
+          <li>Click <strong>Run anyway</strong></li>
+        </ul>
+        <p>This only happens the first time.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num win-step">3</div>
+      <div class="step-content">
+        <h4>No permissions needed</h4>
+        <p>Unlike macOS, Windows lets FlowKeys hear your keystrokes without any extra setup. Just start typing.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num win-step">&check;</div>
+      <div class="step-content">
+        <h4>Done. Start typing.</h4>
+        <p>You'll hear a mechanical click on every keypress immediately.</p>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>SmartScreen warning:</strong> Windows shows this for any unsigned app downloaded from the internet. FlowKeys is free, open source, and safe. Click <strong>More info</strong> &rarr; <strong>Run anyway</strong>.</p>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>Auto-start on login:</strong> Run <span class="code-inline">FlowKeys.exe --enable-autostart</span> once. After that, FlowKeys starts automatically every time you turn on your PC. To remove: <span class="code-inline">FlowKeys.exe --disable-autostart</span></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Uninstall Windows</div>
+    <p>1. If you enabled auto-start, run <span class="code-inline">FlowKeys.exe --disable-autostart</span> first.</p>
+    <p>2. Delete <strong>FlowKeys.exe</strong>. That's it. No registry entries, no hidden files.</p>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Keyboard Shortcuts</div>
+    <h3>Two shortcuts. Both platforms.</h3>
+
+    <table class="shortcut-table">
+      <thead>
+        <tr>
+          <th>Mac</th>
+          <th>Windows</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color: #007aff;">Cmd + Ctrl + K</td>
+          <td style="color: #0078d4;">Win + Ctrl + K</td>
+          <td>Toggle sound on/off</td>
+        </tr>
+        <tr>
+          <td style="color: #007aff;">Cmd + Ctrl + S</td>
+          <td style="color: #0078d4;">Win + Ctrl + S</td>
+          <td>Switch between mechanical and soft</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="page-number">5</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 6 — FAQ                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Frequently Asked Questions</div>
+    <h2>Everything you need to know.</h2>
+
+    <div class="faq-item">
+      <h4>What is FlowKeys?</h4>
+      <p>A tiny free app that plays a mechanical keyboard click sound every time you press a key. Works on Mac and Windows.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Is it free?</h4>
+      <p>Yes. Free and open source (MIT license). No ads, no subscriptions, no hidden costs.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Does it work on Mac?</h4>
+      <p>Yes. Run the one-line installer in Terminal. Requires Python 3 (most Macs have it already).</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Does it work on Windows?</h4>
+      <p>Yes. Download <strong>FlowKeys.exe</strong> from the GitHub Releases page. No installation, no Python, no setup needed.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Do I need to install Python?</h4>
+      <p><strong>Mac:</strong> Python 3 is required. Most Macs have it already. The installer will tell you if it's missing.<br>
+      <strong>Windows:</strong> No. The .exe bundles everything. Just download and run.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Does it start automatically when I restart?</h4>
+      <p><strong>Mac:</strong> Yes, automatically. The installer sets this up.<br>
+      <strong>Windows:</strong> Run <span class="code-inline">FlowKeys.exe --enable-autostart</span> once. After that, it starts on every login.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>How do I stop it?</h4>
+      <p>Press <span class="code-inline">Ctrl+C</span> in the terminal window, or close the window. On Windows, you can also use Task Manager.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>How do I switch between mechanical and soft sounds?</h4>
+      <p>Press <span class="code-inline">Cmd+Ctrl+S</span> on Mac or <span class="code-inline">Win+Ctrl+S</span> on Windows.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Why does Mac need Accessibility permission but Windows doesn't?</h4>
+      <p>macOS requires explicit permission for any app that monitors keyboard input. Windows allows keyboard hooks without special permissions. This is a difference in how each operating system handles security.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Can I use it on both Mac and Windows?</h4>
+      <p>Yes. The same codebase runs on both. Mac uses the Terminal installer, Windows uses the .exe.</p>
+    </div>
+
+  </div>
+  <div class="page-number">6</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 7 — FAQ continued + TROUBLESHOOTING           -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">FAQ (continued)</div>
+
+    <div class="faq-item">
+      <h4>Will my antivirus flag it? (Windows)</h4>
+      <p>Some antivirus programs may flag keyboard hooks as suspicious. This is because FlowKeys listens to your keypresses to play sounds. Add FlowKeys as an exception if your antivirus blocks it. FlowKeys is open source &mdash; you can verify the code yourself.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Why does Windows say "Windows protected your PC"?</h4>
+      <p>This is Windows SmartScreen. It shows this for any unsigned .exe downloaded from the internet. Click <strong>More info</strong> &rarr; <strong>Run anyway</strong>. This is a one-time warning.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Where are the log files?</h4>
+      <p><strong>Mac:</strong> <span class="code-inline">~/Library/Logs/FlowKeys/flowkeys.log</span><br>
+      <strong>Windows:</strong> <span class="code-inline">%LOCALAPPDATA%\FlowKeys\Logs\flowkeys.log</span></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Troubleshooting &mdash; Mac</div>
+    <h3>Something not working on Mac?</h3>
+
+    <div class="faq-item">
+      <h4>No sound when I type</h4>
+      <p>This is almost always the Accessibility permission. Go to <strong>System Settings &rarr; Privacy &amp; Security &rarr; Accessibility</strong> and make sure both the Python binary and Terminal are listed and toggled ON. You can also run: <span class="code-inline">python3 ~/FlowKeys/main.py --fix-permissions</span></p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>FlowKeys doesn't start after reboot</h4>
+      <p>Run <span class="code-inline">launchctl list | grep flowkeys</span> in Terminal. If nothing shows up, re-run the install command.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>"FlowKeys is already running"</h4>
+      <p>Another instance is active. Run in Terminal:</p>
+      <div class="code-block">pkill -9 -f "FlowKeys" && rm -f ~/.flowkeys.pid</div>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>macOS blocks install.command</h4>
+      <p>Use the one-line Terminal installer instead &mdash; it bypasses Gatekeeper completely.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Python or dependency errors</h4>
+      <p>Check your Python version: <span class="code-inline">python3 --version</span>. Reinstall dependencies: <span class="code-inline">pip3 install pynput pygame-ce</span></p>
+    </div>
+
+  </div>
+  <div class="page-number">7</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE 8 — WINDOWS TROUBLESHOOTING + CONTACT         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="pad pad-top">
+
+    <div class="section-label">Troubleshooting &mdash; Windows</div>
+    <h3>Something not working on Windows?</h3>
+
+    <div class="faq-item">
+      <h4>No sound when I type</h4>
+      <p>Make sure your volume is not muted. Some antivirus software may block keyboard hooks &mdash; add FlowKeys as an exception. Try running as Administrator (right-click &rarr; Run as administrator).</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>"FlowKeys is already running"</h4>
+      <p>Open Task Manager &rarr; find FlowKeys &rarr; End task. Then run FlowKeys.exe again.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Sound is delayed</h4>
+      <p>Close audio-heavy apps (video calls, music production software). FlowKeys uses ~12ms latency &mdash; any delay is usually caused by system audio contention.</p>
+    </div>
+
+    <div class="divider-thin"></div>
+
+    <div class="faq-item">
+      <h4>Keyboard shortcuts don't work in admin apps</h4>
+      <p>If you run an app as Administrator, FlowKeys can't detect keypresses in that app unless FlowKeys is also running as Administrator. This is a Windows security feature.</p>
+    </div>
+
+  </div>
+
+  <div class="footer-final">
+    <div class="section-label" style="margin-bottom: 12px;">Still Stuck?</div>
+    <div class="email">write.rhalder90@gmail.com</div>
+    <p style="margin-top: 12px;">
+      Free &amp; open source &bull; <a href="https://github.com/rhalder90/FlowKeys">github.com/rhalder90/FlowKeys</a><br>
+      Sound credits: OpenGameArt by eklee and qubodup (CC-BY 3.0) &bull; MIT License
+    </p>
+  </div>
+
+  <div class="page-number">8</div>
+</div>
+
+
+</body>
+</html>
