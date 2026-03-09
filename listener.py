@@ -3,10 +3,13 @@
 # Detects the toggle shortcut (Cmd+Ctrl+K) and switch shortcut (Cmd+Ctrl+S).
 
 # === IMPORTS ===
-import sys        # For getting the actual python executable path
-import ctypes     # For calling macOS AXIsProcessTrusted() directly
-import ctypes.util  # For finding system framework libraries
+import sys        # For getting the actual python executable path and detecting OS
 import threading  # For running the accessibility check timer
+
+# ctypes is only needed on macOS for calling AXIsProcessTrusted()
+if sys.platform == "darwin":
+    import ctypes
+    import ctypes.util
 import logging    # For recording events
 from pynput import keyboard  # The library that captures global keypresses
 import config   # Our settings: shortcut keys, sound order
@@ -40,10 +43,14 @@ def _print_shortcuts():
     # Print a blank line for visual separation.
     print()
 
-    # Show both shortcuts so the user doesn't forget them.
+    # Show platform-appropriate shortcuts.
+    if sys.platform == "win32":
+        mod = "Win+Ctrl"
+    else:
+        mod = "Cmd+Ctrl"
     print("  Shortcuts:")
-    print("    Cmd+Ctrl+K  →  Toggle sound on/off")
-    print("    Cmd+Ctrl+S  →  Switch sound (mechanical ↔ soft)")
+    print(f"    {mod}+K  →  Toggle sound on/off")
+    print(f"    {mod}+S  →  Switch sound (mechanical ↔ soft)")
     print()
 
 
@@ -161,29 +168,24 @@ def _on_release(key):
 
 def _get_python_binary_path():
     """
-    Get the ACTUAL binary that macOS sees running this process.
-
-    On macOS with the official Python installer, python3 is a launcher stub
-    that exec's Python.app/Contents/MacOS/Python. sys.executable reports the
-    stub path, but macOS TCC checks the REAL binary. We use `ps` to find
-    what the OS actually sees.
-
-    Example:
-      sys.executable:  .../bin/python3
-      os.path.realpath: .../bin/python3.14   (the stub)
-      ps shows:         .../Python.app/Contents/MacOS/Python  (the REAL binary)
+    Get the ACTUAL binary that the OS sees running this process.
+    On Windows, sys.executable is reliable. On macOS, python3 is a launcher
+    stub that exec's Python.app — we use `ps` to find the real binary.
     """
     import os
-    import subprocess as sp
 
+    # On Windows, sys.executable is the actual binary. No symlink games.
+    if sys.platform == "win32":
+        return sys.executable
+
+    # macOS: use `ps` to find what the OS actually sees.
+    import subprocess as sp
     try:
-        # Ask the OS what binary is actually running for our process.
         result = sp.run(
             ["ps", "-p", str(os.getpid()), "-o", "command="],
             capture_output=True, text=True, timeout=5
         )
         if result.returncode == 0 and result.stdout.strip():
-            # ps output is "binary_path args...", take just the binary.
             actual_binary = result.stdout.strip().split()[0]
             if os.path.exists(actual_binary):
                 return actual_binary
@@ -196,42 +198,34 @@ def _get_python_binary_path():
 
 def check_accessibility_trusted():
     """
-    Use the macOS Accessibility API (AXIsProcessTrusted) to check if this
-    process has Accessibility permission RIGHT NOW — no waiting needed.
-
-    Returns True if trusted, False if not.
-
-    How it works:
-    macOS stores Accessibility permissions in a TCC database. The function
-    AXIsProcessTrusted() in ApplicationServices.framework checks if the
-    current process (identified by its code signature hash) is in that database
-    with permission granted. This is the same check pynput hits internally.
+    Check if this process has permission to monitor keyboard events.
+    On macOS, uses AXIsProcessTrusted() from ApplicationServices framework.
+    On Windows, keyboard hooks work without special permissions — always returns True.
     """
+    # Windows doesn't need Accessibility permission for keyboard hooks.
+    if sys.platform != "darwin":
+        return True
+
     try:
-        # Load the macOS ApplicationServices framework which contains
-        # the Accessibility API functions.
         lib = ctypes.cdll.LoadLibrary(
             "/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices"
         )
-
-        # AXIsProcessTrusted() returns a C boolean:
-        # 1 = this process has Accessibility permission
-        # 0 = this process does NOT have Accessibility permission
         lib.AXIsProcessTrusted.restype = ctypes.c_bool
         return lib.AXIsProcessTrusted()
 
     except Exception:
-        # If we can't load the framework (shouldn't happen on macOS),
-        # fall back to assuming it's fine and let the 3-second check catch it.
         return True
 
 
 def _print_permission_instructions():
     """
     Print detailed instructions for fixing Accessibility permissions.
-    Shows the exact python binary path that needs to be added.
+    Only relevant on macOS — Windows doesn't need this.
     """
-    # Get the real binary path (resolving all symlinks).
+    # On Windows, keyboard hooks work without special permissions.
+    if sys.platform != "darwin":
+        return
+
     real_path = _get_python_binary_path()
 
     msg = (

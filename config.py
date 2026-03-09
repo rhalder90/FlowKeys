@@ -2,18 +2,20 @@
 # Change these values to customize how FlowKeys behaves.
 
 # === IMPORTS ===
-import os  # We use 'os' to work with file paths on any system
+import os   # We use 'os' to work with file paths on any system
+import sys  # We use 'sys' to detect the operating system (Windows vs macOS)
 
 # === VERSION ===
 # The current version of FlowKeys. Shown in the startup banner.
 VERSION = "1.0.0"
 
 # === FILE PATHS ===
-# __file__ is a special Python variable that holds the path to THIS file (config.py).
-# os.path.dirname gets the folder that contains this file.
-# This way, we always find the sounds folder relative to where the code lives,
-# no matter where the user runs the script from.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# When packaged as a .exe by PyInstaller, files are extracted to a temp folder.
+# sys._MEIPASS points to that temp folder. In normal Python, we use __file__.
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # The "sounds" folder sits right next to this config.py file.
 SOUND_DIR = os.path.join(BASE_DIR, "sounds")
@@ -45,29 +47,40 @@ VOLUME = 0.5
 NUM_AUDIO_CHANNELS = 16
 
 # === KEYBOARD SHORTCUTS ===
-# These are the modifier keys that must be held down for each shortcut.
-# "cmd" = Command key (⌘) on Mac
-# "ctrl" = Control key (⌃) on Mac
-# The third key in the combo is a regular letter key.
+# The modifier keys that must be held down for each shortcut.
+# macOS: Cmd + Ctrl (⌘ + ⌃)
+# Windows: Win + Ctrl (the Windows key acts like Cmd)
 
-# Toggle FlowKeys on/off: hold Cmd + Ctrl, then press K
-TOGGLE_COMBO_MODIFIERS = {"cmd", "ctrl"}  # Set of modifier keys to hold
-TOGGLE_COMBO_KEY = "k"                     # The letter key to press
-
-# Switch between mechanical/soft sounds: hold Cmd + Ctrl, then press S
-SWITCH_COMBO_MODIFIERS = {"cmd", "ctrl"}  # Set of modifier keys to hold
-SWITCH_COMBO_KEY = "s"                     # The letter key to press
+if sys.platform == "win32":
+    # Toggle FlowKeys on/off: hold Win + Ctrl, then press K
+    TOGGLE_COMBO_MODIFIERS = {"cmd", "ctrl"}  # pynput maps Win key to "cmd"
+    TOGGLE_COMBO_KEY = "k"
+    # Switch sounds: hold Win + Ctrl, then press S
+    SWITCH_COMBO_MODIFIERS = {"cmd", "ctrl"}
+    SWITCH_COMBO_KEY = "s"
+else:
+    # Toggle FlowKeys on/off: hold Cmd + Ctrl, then press K
+    TOGGLE_COMBO_MODIFIERS = {"cmd", "ctrl"}
+    TOGGLE_COMBO_KEY = "k"
+    # Switch sounds: hold Cmd + Ctrl, then press S
+    SWITCH_COMBO_MODIFIERS = {"cmd", "ctrl"}
+    SWITCH_COMBO_KEY = "s"
 
 # === LOGGING ===
 # Where FlowKeys writes its log file.
-# ~/Library/Logs/ is the standard macOS location for app logs.
-LOG_DIR = os.path.expanduser("~/Library/Logs/FlowKeys")
+if sys.platform == "win32":
+    # Windows: %LOCALAPPDATA%\FlowKeys\Logs (e.g. C:\Users\Name\AppData\Local\FlowKeys\Logs)
+    LOG_DIR = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "FlowKeys", "Logs")
+else:
+    # macOS: ~/Library/Logs/ is the standard location for app logs.
+    LOG_DIR = os.path.expanduser("~/Library/Logs/FlowKeys")
 
 # The name of the log file inside LOG_DIR.
 LOG_FILE = "flowkeys.log"
 
 # === PID FILE ===
 # A PID file prevents two copies of FlowKeys from running at the same time.
-# It stores the process ID of the running instance.
-# ~ means your home folder (e.g., /Users/rahulhalder).
-PID_FILE = os.path.expanduser("~/.flowkeys.pid")
+if sys.platform == "win32":
+    PID_FILE = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "FlowKeys", "flowkeys.pid")
+else:
+    PID_FILE = os.path.expanduser("~/.flowkeys.pid")

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FlowKeys for Windows</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    color: #1d1d1f;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, #0078d4 0%, #005a9e 100%);
+    color: #ffffff;
+    text-align: center;
+    padding: 32px 40px 24px;
+  }
+
+  .hero-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 8px;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .hero p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.4;
+  }
+
+  /* Content */
+  .content {
+    padding: 20px 36px 0;
+  }
+
+  /* Cost Row */
+  .cost-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .cost-box {
+    flex: 1;
+    background: #f5f5f7;
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .cost-box.free {
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    color: #fff;
+  }
+
+  .cost-box .price {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .cost-box .price-label {
+    font-size: 10px;
+    color: #86868b;
+    margin-top: 2px;
+  }
+
+  .cost-box.free .price-label {
+    color: rgba(255,255,255,0.75);
+  }
+
+  .vs {
+    font-size: 11px;
+    font-weight: 700;
+    color: #86868b;
+    flex-shrink: 0;
+  }
+
+  /* Section Headers */
+  .section-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 4px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  /* Sound Cards */
+  .sounds-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .sound-card {
+    flex: 1;
+    background: #f5f5f7;
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .sound-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .sound-card p {
+    font-size: 11px;
+    color: #86868b;
+    line-height: 1.4;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e5e5e7;
+    margin: 16px 0;
+  }
+
+  /* Steps */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 24px;
+    height: 24px;
+    background: #0078d4;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 12.5px;
+    color: #424245;
+    line-height: 1.5;
+  }
+
+  .step-text strong {
+    color: #1d1d1f;
+  }
+
+  .code-inline {
+    font-family: "Cascadia Code", "Consolas", "SF Mono", Menlo, Monaco, monospace;
+    font-size: 10.5px;
+    background: #f5f5f7;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #1d1d1f;
+  }
+
+  /* Tip */
+  .tip {
+    background: #f0f5ff;
+    border-left: 3px solid #0078d4;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    margin: 10px 0 14px;
+    font-size: 11px;
+    color: #424245;
+    line-height: 1.45;
+  }
+
+  .tip strong { color: #0078d4; }
+
+  /* Warning */
+  .warning {
+    background: #fff8f0;
+    border-left: 3px solid #ff9500;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    margin: 10px 0 14px;
+    font-size: 11px;
+    color: #424245;
+    line-height: 1.45;
+  }
+
+  .warning strong { color: #ff9500; }
+
+  /* Shortcuts Table */
+  .shortcut-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .shortcut-item {
+    flex: 1;
+    background: #f5f5f7;
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+
+  .shortcut-item .keys {
+    font-family: "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0078d4;
+    margin-bottom: 3px;
+  }
+
+  .shortcut-item .action {
+    font-size: 11px;
+    color: #86868b;
+  }
+
+  /* Footer */
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f5f5f7;
+    text-align: center;
+    padding: 14px 36px;
+  }
+
+  .footer p {
+    font-size: 10px;
+    color: #86868b;
+    line-height: 1.6;
+  }
+
+  .footer a {
+    color: #0078d4;
+    text-decoration: none;
+  }
+
+  .footer .email {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0078d4;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">For Windows</div>
+    <h1>FlowKeys</h1>
+    <p>Mechanical keyboard sounds for your PC. No keyboard needed.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Cost Comparison -->
+    <div class="cost-row">
+      <div class="cost-box">
+        <div class="price">$80 &ndash; $300+</div>
+        <div class="price-label">Mechanical keyboard</div>
+      </div>
+      <div class="vs">vs.</div>
+      <div class="cost-box free">
+        <div class="price">Free</div>
+        <div class="price-label">FlowKeys</div>
+      </div>
+    </div>
+
+    <!-- Two Sounds -->
+    <div class="section-label">Two Sounds Included</div>
+    <div class="sounds-row">
+      <div class="sound-card">
+        <h4>Mechanical</h4>
+        <p>Classic Cherry MX click. The satisfying sound from every coding video.</p>
+      </div>
+      <div class="sound-card">
+        <h4>Soft</h4>
+        <p>Quieter, gentler tap. Perfect for late nights or shared spaces.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Setup Steps -->
+    <div class="section-label">Setup Guide</div>
+    <h2>Download. Double-click. Done.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          Go to <strong>github.com/rhalder90/FlowKeys/releases</strong> and download <strong>FlowKeys.exe</strong>.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          Double-click <strong>FlowKeys.exe</strong>. Windows may show a blue warning &mdash; click <strong>More info</strong> &rarr; <strong>Run anyway</strong>. This is normal for unsigned apps.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>No permissions needed.</strong> Unlike macOS, Windows lets FlowKeys hear your keystrokes without any extra setup. Just start typing.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">&check;</div>
+        <div class="step-text">
+          <strong>Done.</strong> Start typing. You'll hear a mechanical click on every keypress.
+        </div>
+      </div>
+    </div>
+
+    <div class="warning">
+      <strong>SmartScreen warning:</strong> Windows shows "Windows protected your PC" for apps downloaded from the internet that aren't signed. FlowKeys is free, open source, and safe. Click <strong>More info</strong> &rarr; <strong>Run anyway</strong> to proceed.
+    </div>
+
+    <div class="tip">
+      <strong>Auto-start on login:</strong> To have FlowKeys start automatically when you turn on your PC, run: <span class="code-inline">FlowKeys.exe --enable-autostart</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Shortcuts -->
+    <div class="section-label">Keyboard Shortcuts</div>
+    <div class="shortcut-row">
+      <div class="shortcut-item">
+        <div class="keys">Win + Ctrl + K</div>
+        <div class="action">Turn sound on / off</div>
+      </div>
+      <div class="shortcut-item">
+        <div class="keys">Win + Ctrl + S</div>
+        <div class="action">Switch mechanical / soft</div>
+      </div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="section-label">Troubleshooting</div>
+    <p style="font-size: 11.5px; color: #424245; line-height: 1.5; margin-bottom: 6px;">
+      <strong>No sound?</strong> Make sure your volume is not muted. Some antivirus may block keyboard hooks &mdash; add FlowKeys as an exception.
+    </p>
+    <p style="font-size: 11.5px; color: #424245; line-height: 1.5; margin-bottom: 6px;">
+      <strong>Remove auto-start:</strong> <span class="code-inline">FlowKeys.exe --disable-autostart</span>
+    </p>
+    <p style="font-size: 11.5px; color: #424245; line-height: 1.5; margin-bottom: 0;">
+      <strong>Uninstall:</strong> Just delete FlowKeys.exe. If you enabled auto-start, run <span class="code-inline">--disable-autostart</span> first.
+    </p>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>
+      Need help? Email <span class="email">write.rhalder90@gmail.com</span><br>
+      Free &amp; open source &bull; <a href="https://github.com/rhalder90/FlowKeys">github.com/rhalder90/FlowKeys</a> &bull; Sound credits: OpenGameArt (CC-BY 3.0)
+    </p>
+  </div>
+
+</body>
+</html>

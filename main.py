@@ -20,19 +20,30 @@ def show_help():
     Print usage information and exit.
     Called when the user runs: python3 main.py --help
     """
-    # Print a helpful usage guide with all shortcuts and options.
+    if sys.platform == "win32":
+        platform_name = "Windows"
+        mod = "Win+Ctrl"
+        extra_cmds = (
+            "    FlowKeys.exe --enable-autostart  Start FlowKeys on login\n"
+            "    FlowKeys.exe --disable-autostart Remove auto-start"
+        )
+    else:
+        platform_name = "Mac"
+        mod = "Cmd+Ctrl"
+        extra_cmds = "    python3 main.py --fix-permissions Reset and re-grant Accessibility permission"
+
     print(f"""
   FlowKeys v{config.VERSION}
-  Mechanical keyboard sounds for your Mac.
+  Mechanical keyboard sounds for your {platform_name}.
 
   USAGE:
     python3 main.py                   Start FlowKeys
     python3 main.py --help            Show this help message
-    python3 main.py --fix-permissions Reset and re-grant Accessibility permission
+{extra_cmds}
 
   SHORTCUTS (while running):
-    Cmd+Ctrl+K    Toggle sound on/off
-    Cmd+Ctrl+S    Switch between mechanical and soft sound
+    {mod}+K    Toggle sound on/off
+    {mod}+S    Switch between mechanical and soft sound
 
   SOUNDS:
     mechanical    Classic Cherry MX clicky sound
@@ -44,27 +55,21 @@ def show_help():
   STOP:
     Press Ctrl+C in the terminal, or close the terminal window.
 """)
-    # Exit after showing help — don't start the listener.
     sys.exit(0)
 
 
 def fix_permissions():
     """
-    Reset the macOS TCC (Transparency, Consent, Control) database for
-    Accessibility permissions and open System Settings for re-granting.
-
-    WHY THIS EXISTS:
-    macOS TCC tracks Accessibility permissions by binary path + code signature hash.
-    When Python updates (even a minor patch), the binary hash changes but the TCC
-    entry keeps the old hash. macOS silently rejects the now-mismatched binary.
-    Toggling the permission OFF/ON in System Settings doesn't help because it
-    operates on the stale entry. The only fix is to RESET the TCC entry entirely
-    so macOS re-evaluates the binary fresh.
+    Reset the macOS TCC database for Accessibility permissions.
+    On Windows, this is not needed — prints a message and exits.
     """
+    if sys.platform == "win32":
+        print("\n  Permission repair is only needed on macOS.")
+        print("  On Windows, FlowKeys works without special permissions.\n")
+        sys.exit(0)
+
     import os
 
-    # Get the ACTUAL binary that macOS sees (not the symlink or stub).
-    # On macOS with official Python, python3 is a stub that exec's Python.app.
     actual_binary = None
     try:
         result = subprocess.run(
@@ -87,15 +92,12 @@ def fix_permissions():
     print(f"    {actual_binary}")
     print()
 
-    # Step 1: Reset TCC entries that might be stale.
-    # tccutil is a macOS command that manages the TCC database.
-    # "reset Accessibility" clears ALL Accessibility entries for the given bundle ID.
     print("  Resetting Accessibility permissions...")
     tcc_targets = [
-        "com.apple.Terminal",         # Terminal.app
-        "com.googlecode.iterm2",      # iTerm2
-        "com.microsoft.VSCode",       # VS Code
-        "org.python.python",          # Official Python installer
+        "com.apple.Terminal",
+        "com.googlecode.iterm2",
+        "com.microsoft.VSCode",
+        "org.python.python",
     ]
 
     for bundle_id in tcc_targets:
@@ -106,7 +108,6 @@ def fix_permissions():
         if "Successfully" in result.stdout:
             print(f"    ✓ Reset: {bundle_id}")
 
-    # Step 2: Open System Settings to the Accessibility pane.
     print()
     print("  Opening System Settings → Accessibility...")
     subprocess.run([
@@ -114,7 +115,6 @@ def fix_permissions():
         "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
     ])
 
-    # Step 3: Show instructions with the exact binary path.
     print(f"""
   NOW DO THIS:
   1. Click + → press Cmd+Shift+G
@@ -194,22 +194,19 @@ def _remove_pid_file():
 
 def _send_notification(title, message):
     """
-    Send a macOS notification using osascript (AppleScript).
-    Shows a brief popup in the top-right corner of the screen.
+    Send a desktop notification. Uses osascript on macOS.
+    On Windows, notifications are skipped for now (no extra dependency needed).
     """
-    try:
-        # Build the AppleScript command for a notification.
-        script = f'display notification "{message}" with title "{title}"'
+    if sys.platform == "win32":
+        return  # Skip notifications on Windows (can add win10toast later)
 
-        # Run osascript as a subprocess. It talks to macOS's notification system.
+    try:
+        script = f'display notification "{message}" with title "{title}"'
         subprocess.run(
             ["osascript", "-e", script],
-            capture_output=True,  # Don't show osascript output in our terminal
-            timeout=5             # Don't wait more than 5 seconds
+            capture_output=True, timeout=5
         )
     except Exception:
-        # If notifications fail (e.g., osascript not available), just skip.
-        # This is a nice-to-have, not critical.
         pass
 
 
@@ -249,7 +246,28 @@ if __name__ == "__main__":
         show_help()  # Print help and exit
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fix-permissions":
-        fix_permissions()  # Reset TCC and open System Settings
+        fix_permissions()  # Reset TCC and open System Settings (macOS only)
+
+    # --- Windows auto-start flags ---
+    if len(sys.argv) > 1 and sys.argv[1] == "--enable-autostart":
+        if sys.platform != "win32":
+            print("\n  On macOS, auto-start is managed by LaunchAgent (see install.command).\n")
+            sys.exit(0)
+        from windows import windows_autostart
+        exe_path = sys.executable if getattr(sys, 'frozen', False) else os.path.abspath(__file__)
+        windows_autostart.enable_autostart(exe_path)
+        print("\n  FlowKeys will now start automatically when you log in.")
+        print(f"  Shortcut created in: {windows_autostart.get_startup_folder()}\n")
+        sys.exit(0)
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--disable-autostart":
+        if sys.platform != "win32":
+            print("\n  On macOS, remove the LaunchAgent to disable auto-start.\n")
+            sys.exit(0)
+        from windows import windows_autostart
+        windows_autostart.disable_autostart()
+        print("\n  FlowKeys will no longer start automatically.\n")
+        sys.exit(0)
 
     # --- Set up logging ---
     # Initialize the logger first so all other modules can use it.
@@ -267,22 +285,37 @@ if __name__ == "__main__":
     _write_pid_file()
 
     # --- Print startup banner ---
-    # This is the first thing the user sees when FlowKeys starts.
+    if sys.platform == "win32":
+        platform_name = "Windows"
+        mod = "Win+Ctrl"
+    else:
+        platform_name = "Mac"
+        mod = "Cmd+Ctrl"
+
     print()
-    print(f"  ╔══════════════════════════════════════╗")
-    print(f"  ║         FlowKeys v{config.VERSION}            ║")
-    print(f"  ║   Mechanical keyboard sounds for Mac  ║")
-    print(f"  ╚══════════════════════════════════════╝")
+    print(f"  ======================================")
+    print(f"         FlowKeys v{config.VERSION}")
+    print(f"   Mechanical keyboard sounds for {platform_name}")
+    print(f"  ======================================")
     print()
     print(f"  Sound:  {config.DEFAULT_SOUND}")
     print(f"  Volume: {int(config.VOLUME * 100)}%")
     print()
     print(f"  Shortcuts:")
-    print(f"    Cmd+Ctrl+K  →  Toggle sound on/off")
-    print(f"    Cmd+Ctrl+S  →  Switch sound (mechanical ↔ soft)")
+    print(f"    {mod}+K  ->  Toggle sound on/off")
+    print(f"    {mod}+S  ->  Switch sound (mechanical <-> soft)")
     print()
     print(f"  Press Ctrl+C to quit.")
     print()
+
+    # On Windows, hint about auto-start if not set up yet.
+    if sys.platform == "win32":
+        try:
+            from windows import windows_autostart
+            if not windows_autostart.is_autostart_enabled():
+                print(f"  TIP: Run 'FlowKeys.exe --enable-autostart' to start on login.\n")
+        except ImportError:
+            pass
 
     # --- Initialize the sound player ---
     try:
@@ -296,23 +329,23 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # --- Check Accessibility permission BEFORE starting listener ---
-    # Use the macOS AXIsProcessTrusted() API for an instant check.
-    # This catches stale TCC entries immediately instead of waiting 3 seconds.
-    if not listener.check_accessibility_trusted():
-        real_path = os.path.realpath(sys.executable)
-        logger.warning("Accessibility permission NOT granted for: %s", real_path)
-        listener._print_permission_instructions()
-        print("  TIP: Run this to auto-fix:")
-        print("    python3 ~/FlowKeys/main.py --fix-permissions\n")
-        # Don't exit — still start the listener in case the user grants
-        # permission while FlowKeys is running (macOS picks it up live).
+    # Only relevant on macOS. Windows doesn't need Accessibility permission.
+    if sys.platform == "darwin":
+        if not listener.check_accessibility_trusted():
+            real_path = os.path.realpath(sys.executable)
+            logger.warning("Accessibility permission NOT granted for: %s", real_path)
+            listener._print_permission_instructions()
+            print("  TIP: Run this to auto-fix:")
+            print("    python3 ~/FlowKeys/main.py --fix-permissions\n")
 
     # --- Start the keyboard listener ---
     listener.start()  # Begins listening in a background thread
 
-    # --- Send macOS notification ---
-    # Let the user know FlowKeys is active (shows in notification center).
-    _send_notification("FlowKeys Active", f"Sound: {config.DEFAULT_SOUND} | Cmd+Ctrl+K to toggle")
+    # --- Send desktop notification ---
+    if sys.platform == "win32":
+        _send_notification("FlowKeys Active", f"Sound: {config.DEFAULT_SOUND} | Win+Ctrl+K to toggle")
+    else:
+        _send_notification("FlowKeys Active", f"Sound: {config.DEFAULT_SOUND} | Cmd+Ctrl+K to toggle")
 
     logger.info("FlowKeys is running. Sound: %s", config.DEFAULT_SOUND)
 
@@ -322,6 +355,10 @@ if __name__ == "__main__":
 
     # SIGINT is sent when the user presses Ctrl+C.
     signal.signal(signal.SIGINT, _shutdown)
+
+    # On Windows, SIGBREAK is sent when the console window is closed.
+    if sys.platform == "win32" and hasattr(signal, "SIGBREAK"):
+        signal.signal(signal.SIGBREAK, _shutdown)
 
     # --- Keep the script running ---
     # The keyboard listener runs in a background thread.
