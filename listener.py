@@ -178,22 +178,24 @@ def _get_python_binary_path():
     if sys.platform == "win32":
         return sys.executable
 
-    # macOS: use `ps` to find what the OS actually sees.
-    import subprocess as sp
-    try:
-        result = sp.run(
-            ["ps", "-p", str(os.getpid()), "-o", "command="],
-            capture_output=True, text=True, timeout=5
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            actual_binary = result.stdout.strip().split()[0]
-            if os.path.exists(actual_binary):
-                return actual_binary
-    except Exception:
-        pass
+    # macOS: TCC prefers .app bundles over raw binaries.
+    # Walk up from the resolved binary to find the Python.app bundle.
+    real_bin = os.path.realpath(sys.executable)
+    parts = real_bin.split(os.sep)
+    for i, part in enumerate(parts):
+        if part.endswith(".app"):
+            app_path = os.sep + os.path.join(*parts[1:i+1])
+            if os.path.exists(app_path):
+                return app_path
 
-    # Fallback: resolve symlinks on sys.executable.
-    return os.path.realpath(sys.executable)
+    # Fallback: construct from framework path
+    framework_base = os.path.dirname(os.path.dirname(real_bin))
+    candidate = os.path.join(framework_base, "Resources", "Python.app")
+    if os.path.exists(candidate):
+        return candidate
+
+    # Last resort: raw binary path
+    return real_bin
 
 
 def check_accessibility_trusted():
@@ -233,7 +235,7 @@ def _print_permission_instructions():
         "  ⚠ ACCESSIBILITY PERMISSION MISSING\n"
         "  FlowKeys needs Accessibility permission to hear your keystrokes.\n"
         "\n"
-        f"  The python binary running FlowKeys is:\n"
+        f"  The Python app to add to Accessibility:\n"
         f"    {real_path}\n"
         "\n"
         "  To fix this:\n"

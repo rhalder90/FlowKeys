@@ -70,26 +70,28 @@ def fix_permissions():
 
     import os
 
-    actual_binary = None
-    try:
-        result = subprocess.run(
-            ["ps", "-p", str(os.getpid()), "-o", "command="],
-            capture_output=True, text=True, timeout=5
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            candidate = result.stdout.strip().split()[0]
-            if os.path.exists(candidate):
-                actual_binary = candidate
-    except Exception:
-        pass
-
-    if not actual_binary:
-        actual_binary = os.path.realpath(sys.executable)
+    # Find the Python.app bundle (macOS TCC prefers app bundles over raw binaries)
+    python_app = None
+    real_bin = os.path.realpath(sys.executable)
+    # Walk up from the resolved binary to find the .app bundle
+    parts = real_bin.split(os.sep)
+    for i, part in enumerate(parts):
+        if part.endswith(".app"):
+            python_app = os.sep + os.path.join(*parts[1:i+1])
+            break
+    if not python_app:
+        # Fallback: construct from framework path
+        framework_base = os.path.dirname(os.path.dirname(real_bin))
+        candidate = os.path.join(framework_base, "Resources", "Python.app")
+        if os.path.exists(candidate):
+            python_app = candidate
+        else:
+            python_app = real_bin  # last resort
 
     print(f"\n  FlowKeys Permission Repair Tool")
     print(f"  ================================\n")
-    print(f"  Python binary that macOS sees:")
-    print(f"    {actual_binary}")
+    print(f"  Python app bundle to add:")
+    print(f"    {python_app}")
     print()
 
     # Open System Settings to the Accessibility pane.
@@ -106,7 +108,7 @@ def fix_permissions():
   1. Remove any old Python/FlowKeys entries (select → click − button)
   2. Click + → press Cmd+Shift+G
   3. Paste this exact path:
-       {actual_binary}
+       {python_app}
   4. Press Enter → click Open → toggle ON
   5. Make sure Terminal is also listed and toggled ON
   6. QUIT Terminal (Cmd+Q) and reopen it
