@@ -123,34 +123,36 @@ def check_already_running():
     Uses a PID file (~/.flowkeys.pid) to track the running process.
     Returns True if another instance is running, False if not.
     """
-    # Check if the PID file exists.
-    if os.path.exists(config.PID_FILE):
+    if not os.path.exists(config.PID_FILE):
+        return False
+
+    try:
+        with open(config.PID_FILE, "r") as f:
+            old_pid = int(f.read().strip())
+
+        # Check if the process is alive.
+        os.kill(old_pid, 0)
+
+        # Process exists — verify it's actually FlowKeys (not a recycled PID).
         try:
-            # Read the PID (process ID) from the file.
-            with open(config.PID_FILE, "r") as f:
-                old_pid = int(f.read().strip())
-
-            # Check if a process with that PID is still running.
-            # os.kill with signal 0 doesn't actually kill anything —
-            # it just checks if the process exists.
-            os.kill(old_pid, 0)
-
-            # If we get here, the process IS running.
+            result = subprocess.run(
+                ["ps", "-p", str(old_pid), "-o", "command="],
+                capture_output=True, text=True, timeout=5
+            )
+            cmd = result.stdout.strip()
+            if "main.py" in cmd or "FlowKeys" in cmd:
+                return True
+            else:
+                # PID was recycled by a different process — stale.
+                _remove_pid_file()
+                return False
+        except Exception:
+            # Can't verify — assume running to be safe.
             return True
 
-        except (ValueError, ProcessLookupError, PermissionError):
-            # ValueError: PID file contained garbage, not a number.
-            # ProcessLookupError: The process is no longer running (stale PID file).
-            # PermissionError: Process exists but we can't access it (unlikely).
-            # In all cases, the old instance is gone — clean up the stale PID file.
-            _remove_pid_file()
-
-        except OSError:
-            # Any other OS error — treat as "not running".
-            _remove_pid_file()
-
-    # No running instance found.
-    return False
+    except (ValueError, ProcessLookupError, PermissionError, OSError):
+        _remove_pid_file()
+        return False
 
 
 def _write_pid_file():
