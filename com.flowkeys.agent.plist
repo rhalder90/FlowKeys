@@ -26,9 +26,13 @@
     <key>RunAtLoad</key>
     <true/>
 
-    <!-- Don't restart FlowKeys if it crashes or is manually stopped. -->
+    <!-- Auto-restart FlowKeys if it exits (crash, sleep/wake, etc.) -->
     <key>KeepAlive</key>
-    <false/>
+    <true/>
+
+    <!-- Wait 5 seconds before restarting after exit to avoid rapid loops. -->
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
 
     <!-- Where to write standard output (print statements). -->
     <key>StandardOutPath</key>
