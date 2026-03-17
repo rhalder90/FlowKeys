@@ -354,9 +354,21 @@ if __name__ == "__main__":
     # --- Keep the script running ---
     # The keyboard listener runs in a background thread.
     # We need to keep the main thread alive, or the program would exit immediately.
+    # On macOS, we also watch for sleep/wake stalls and restart the listener.
+    WATCHDOG_INTERVAL = 10   # Check every 10 seconds
+    STALL_THRESHOLD = 30     # If no key events for 30s after wake, restart listener
     try:
         while True:
-            time.sleep(1)  # Sleep 1 second, then loop. Low CPU usage.
+            time.sleep(WATCHDOG_INTERVAL)
+
+            # Watchdog: detect sleep/wake stalls on macOS.
+            # After sleep, macOS sometimes drops the pynput connection.
+            # Restarting the listener re-establishes it.
+            if sys.platform == "darwin":
+                idle = time.time() - listener.get_last_key_time()
+                if idle > STALL_THRESHOLD:
+                    logger.info("Watchdog: no key events for %.0fs, restarting listener", idle)
+                    listener.restart()
 
     except KeyboardInterrupt:
         # This catches Ctrl+C if the signal handler doesn't fire first.

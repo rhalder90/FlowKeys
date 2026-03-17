@@ -10,6 +10,7 @@ import threading  # For running the accessibility check timer
 if sys.platform == "darwin":
     import ctypes
     import ctypes.util
+import time       # For tracking last key event time
 import logging    # For recording events
 from pynput import keyboard  # The library that captures global keypresses
 import config   # Our settings: shortcut keys, sound order
@@ -33,6 +34,9 @@ _pressed_modifiers = set()
 # A flag that tracks whether we've received at least one key event.
 # Used to detect if Accessibility permissions are missing.
 _received_key_event = False
+
+# Timestamp of the last key event. Used to detect sleep/wake stalls.
+_last_key_time = 0.0
 
 
 def _print_shortcuts():
@@ -60,10 +64,11 @@ def _on_press(key):
     This is the heart of FlowKeys — it decides what happens on each keypress.
     """
     # We need to modify these module-level variables.
-    global _enabled, _received_key_event
+    global _enabled, _received_key_event, _last_key_time
 
     # Mark that we received a key event (used for accessibility check).
     _received_key_event = True
+    _last_key_time = time.time()
 
     # === STEP 1: Track modifier keys ===
     # Modifier keys (Cmd, Ctrl, Alt, Shift) are special — pynput gives them
@@ -272,7 +277,10 @@ def start():
     Start listening for keypresses on the entire system.
     The listener runs in a background thread so it doesn't block the main program.
     """
-    global _listener
+    global _listener, _last_key_time
+
+    # Set initial key time so the watchdog doesn't trigger immediately.
+    _last_key_time = time.time()
 
     # Create a pynput keyboard listener.
     # on_press is called for every key down, on_release for every key up.
@@ -289,6 +297,33 @@ def start():
     timer = threading.Timer(3.0, _check_accessibility)
     timer.daemon = True  # Don't keep the program running just for this timer
     timer.start()
+
+
+def restart():
+    """
+    Restart the keyboard listener. Used to recover from sleep/wake
+    where macOS drops the accessibility connection.
+    """
+    global _listener, _received_key_event, _last_key_time
+
+    logger.info("Restarting keyboard listener (recovering from sleep/wake)...")
+
+    # Stop old listener.
+    if _listener is not None:
+        try:
+            _listener.stop()
+        except Exception:
+            pass
+        _listener = None
+
+    # Reset tracking state.
+    _received_key_event = False
+    _last_key_time = time.time()
+
+    # Create and start a fresh listener.
+    _listener = keyboard.Listener(on_press=_on_press, on_release=_on_release)
+    _listener.start()
+    logger.info("Keyboard listener restarted")
 
 
 def stop():
@@ -309,3 +344,11 @@ def is_enabled():
     Return whether sound playback is currently enabled.
     """
     return _enabled
+
+
+def get_last_key_time():
+    """
+    Return the timestamp of the last key event received.
+    Used by the main loop watchdog to detect sleep/wake stalls.
+    """
+    return _last_key_time
